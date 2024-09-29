@@ -28,8 +28,13 @@ const Visualizer = () => {
 
   useEffect(() => {
     createArray()
-    window.addEventListener('resize', createArray)
-    return () => window.removeEventListener('resize', createArray)
+    window.addEventListener('resize', () => {
+      createArray()
+    })
+    return () =>
+      window.removeEventListener('resize', () => {
+        createArray()
+      })
   }, [])
 
   return (
@@ -60,7 +65,11 @@ const Visualizer = () => {
       </div>
       <div className="flex justify-center items-end mt-8 space-x-1">
         {(steps[currentStep] || arr).map((element) => (
-          <ArrayBar key={element.id} element={element} springAnim={springAnim} />
+          <ArrayBar
+            key={element.id}
+            element={element}
+            springAnim={springAnim}
+          />
         ))}
       </div>
     </div>
