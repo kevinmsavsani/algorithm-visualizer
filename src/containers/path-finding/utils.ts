@@ -9,9 +9,8 @@ const initializeStartNode = (grid: Node[][]) => {
   }
   throw new Error('Start node not found')
 }
-const dijkstra = (grid: Node[][], startNode: Node, endNode: Node) => {
+const dijkstra = (grid: Node[][]) => {
   const visitedNodesInOrder = []
-  startNode.distance = 0
   const unvisitedNodes = getAllNodes(grid)
   initializeStartNode(grid)
   while (unvisitedNodes.length) {

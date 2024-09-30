@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -106,8 +106,10 @@ export default function PathfindingVisualizer() {
       const newGrid = toggleWall(grid, row, col)
       setGrid(newGrid)
     } else if (currentTool === 'start') {
+      grid[startNode.row][startNode.col].isStart = false
       setStartNode({ row, col })
     } else if (currentTool === 'end') {
+      grid[endNode.row][endNode.col].isEnd = false
       setEndNode({ row, col })
     }
     setMouseIsPressed(true)
@@ -138,51 +140,63 @@ export default function PathfindingVisualizer() {
     setIsVisualized(true)
   }
 
+  const currentStepRef = useRef(0)
+  const gridRef = useRef(grid)
+
+  useEffect(() => {
+    gridRef.current = grid
+  }, [grid])
+
   const visualizeStep = useCallback(() => {
-      if (currentStep >= visitedNodesInOrder.length + nodesInShortestPath.length) {
-        setIsRunning(false);
-        setIsPaused(true);
-        if (animationInterval) {
-          clearInterval(animationInterval);
-        }
-        return;
+    const currentStep = currentStepRef.current
+    if (
+      currentStep >=
+      visitedNodesInOrder.length + nodesInShortestPath.length
+    ) {
+      setIsRunning(false)
+      setIsPaused(true)
+      if (animationInterval) {
+        clearInterval(animationInterval)
       }
-  
-      setGrid((prevGrid) => {
-        const newGrid = prevGrid.slice();
-        if (currentStep < visitedNodesInOrder.length) {
-          const { row, col } = visitedNodesInOrder[currentStep];
-          newGrid[row][col] = {
-            ...newGrid[row][col],
-            isVisited: true,
-          };
-        } else {
-          const pathIndex = currentStep - visitedNodesInOrder.length;
-          const node = nodesInShortestPath[pathIndex];
-          newGrid[node.row][node.col] = {
-            ...newGrid[node.row][node.col],
-            isPath: true,
-          };
+      return
+    }
+
+    setGrid((prevGrid) => {
+      const newGrid = prevGrid.slice()
+      if (currentStep < visitedNodesInOrder.length) {
+        const { row, col } = visitedNodesInOrder[currentStep]
+        newGrid[row][col] = {
+          ...newGrid[row][col],
+          isVisited: true,
         }
-        return newGrid;
-      });
-  
-      setCurrentStep((prev) => prev + 1);
-    }, [currentStep, visitedNodesInOrder, nodesInShortestPath, animationInterval]);
-  
-    useEffect(() => {
-      if (isRunning && !isPaused) {
-        const interval = setInterval(visualizeStep, 100 - animationSpeed);
-        setAnimationInterval(interval);
-      } else if (animationInterval) {
-        clearInterval(animationInterval);
+      } else {
+        const pathIndex = currentStep - visitedNodesInOrder.length
+        const node = nodesInShortestPath[pathIndex]
+        newGrid[node.row][node.col] = {
+          ...newGrid[node.row][node.col],
+          isPath: true,
+        }
       }
-      return () => {
-        if (animationInterval) {
-          clearInterval(animationInterval);
-        }
-      };
-    }, [isRunning, isPaused, animationSpeed]);
+      return newGrid
+    })
+
+    currentStepRef.current += 1
+    setCurrentStep(currentStepRef.current)
+  }, [visitedNodesInOrder, nodesInShortestPath, animationInterval])
+
+  useEffect(() => {
+    if (isRunning && !isPaused) {
+      const interval = setInterval(visualizeStep, 1000 - animationSpeed*10)
+      setAnimationInterval(interval)
+    } else if (animationInterval) {
+      clearInterval(animationInterval)
+    }
+    return () => {
+      if (animationInterval) {
+        clearInterval(animationInterval)
+      }
+    }
+  }, [isRunning, isPaused, animationSpeed])
 
   const handleStartPause = () => {
     if (!isVisualized) {
@@ -254,7 +268,7 @@ export default function PathfindingVisualizer() {
       if (animationInterval) {
         clearInterval(animationInterval)
       }
-      const newInterval = setInterval(visualizeStep, 5000 - value[0] * 10)
+      const newInterval = setInterval(visualizeStep, 1000 - value[0] * 10)
       setAnimationInterval(newInterval)
     }
   }
