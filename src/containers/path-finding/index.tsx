@@ -11,6 +11,7 @@ import {
   SkipForward,
   RotateCcw,
 } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface Node {
   row: number
@@ -27,7 +28,7 @@ interface Node {
 const GRID_ROWS = 20
 const GRID_COLS = 50
 
-export default function EnhancedPathfindingVisualizer() {
+export default function PathfindingVisualizer() {
   const [grid, setGrid] = useState<Node[][]>([])
   const [mouseIsPressed, setMouseIsPressed] = useState(false)
   const [startNode, setStartNode] = useState<{ row: number; col: number }>({
@@ -281,56 +282,43 @@ export default function EnhancedPathfindingVisualizer() {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Enhanced Pathfinding Visualizer
-      </h1>
-      <div className="mb-4 space-x-2">
-        <Button
-          onClick={() => setCurrentTool('wall')}
-          variant={currentTool === 'wall' ? 'default' : 'outline'}
-        >
-          Wall
-        </Button>
-        <Button
-          onClick={() => setCurrentTool('start')}
-          variant={currentTool === 'start' ? 'default' : 'outline'}
-        >
-          <PlaneTakeoff className="w-4 h-4 mr-2" />
-          Start
-        </Button>
-        <Button
-          onClick={() => setCurrentTool('end')}
-          variant={currentTool === 'end' ? 'default' : 'outline'}
-        >
-          <Target className="w-4 h-4 mr-2" />
-          End
-        </Button>
-        <Button onClick={visualizeDijkstra} disabled={isRunning}>
-          Visualize Dijkstra's Algorithm
-        </Button>
-        <Button onClick={handlePauseResume} disabled={!isRunning}>
-          {isPaused ? (
-            <Play className="w-4 h-4 mr-2" />
-          ) : (
-            <Pause className="w-4 h-4 mr-2" />
-          )}
-          {isPaused ? 'Resume' : 'Pause'}
-        </Button>
-        <Button
-          onClick={handleStepForward}
-          disabled={
-            !isRunning ||
-            currentStep >=
-              visitedNodesInOrder.length + nodesInShortestPath.length
-          }
-        >
-          <SkipForward className="w-4 h-4 mr-2" />
-          Step Forward
-        </Button>
-        <Button onClick={handleReset}>
-          <RotateCcw className="w-4 h-4 mr-2" />
-          Reset
-        </Button>
+      <div className="flex w-full justify-between items-center">
+        <h1 className="text-2xl font-bold mb-4">Pathfinding Visualizer</h1>
+        <div className="flex mb-4 space-x-2">
+          <Tabs defaultValue="wall">
+            <TabsList>
+              <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>Wall</TabsTrigger>
+              <TabsTrigger value="start" onClick={() => setCurrentTool('start')}>Start</TabsTrigger>
+              <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>End</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button onClick={visualizeDijkstra} disabled={isRunning}>
+            Visualize Dijkstra's Algorithm
+          </Button>
+          <Button onClick={handlePauseResume} disabled={!isRunning}>
+            {isPaused ? (
+              <Play className="w-4 h-4 mr-2" />
+            ) : (
+              <Pause className="w-4 h-4 mr-2" />
+            )}
+            {isPaused ? 'Resume' : 'Pause'}
+          </Button>
+          <Button
+            onClick={handleStepForward}
+            disabled={
+              !isRunning ||
+              currentStep >=
+                visitedNodesInOrder.length + nodesInShortestPath.length
+            }
+          >
+            <SkipForward className="w-4 h-4 mr-2" />
+            Step Forward
+          </Button>
+          <Button onClick={handleReset}>
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reset
+          </Button>
+        </div>
       </div>
       <div className="mb-4 flex items-center space-x-4">
         <span>Animation Speed:</span>

@@ -7,6 +7,7 @@ import {
 import Layout from './containers/layout'
 import Home from './containers/home'
 import Sorting from './containers/sorting'
+import PathfindingVisualizer from './containers/path-finding'
 
 const App = () => {
   const router = createBrowserRouter(
@@ -14,6 +15,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/sorting" element={<Sorting />} />
+        <Route path="/path-finding" element={<PathfindingVisualizer />} />
       </Route>,
     ),
   )

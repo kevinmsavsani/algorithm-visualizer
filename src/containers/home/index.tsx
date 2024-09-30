@@ -1,5 +1,4 @@
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
-import { CardSpotlight } from '@/components/ui/card-spotlight'
 import { Link } from 'react-router-dom'
 
 const NetworkBackground = () => (
@@ -25,7 +24,7 @@ const NetworkBackground = () => (
 const AlgorithmIcon = ({
   type,
 }: {
-  type: 'sorting' | 'pathfinding' | 'convexhull'
+  type: 'sorting' | 'path-finding' | 'convex-hull'
 }) => {
   switch (type) {
     case 'sorting':
@@ -41,7 +40,7 @@ const AlgorithmIcon = ({
           <rect x="21" y="0" width="4" height="24" />
         </svg>
       )
-    case 'pathfinding':
+    case 'path-finding':
       return (
         <svg
           className="w-64 h-64 text-green-400"
@@ -56,7 +55,7 @@ const AlgorithmIcon = ({
           <path d="M4 7v10M12 15v5M20 7v10M7 4h10M15 12h5M7 20h10" />
         </svg>
       )
-    case 'convexhull':
+    case 'convex-hull':
       return (
         <svg
           className="w-64 h-64 text-green-400"
@@ -95,7 +94,7 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-8">
-          {['sorting', 'pathfinding', 'convexhull'].map((type) => (
+          {['sorting', 'path-finding', 'convex-hull'].map((type) => (
             <Link to={`/${type}`} key={type}>
               <CardContainer className="inter-var">
                 <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border flex flex-col items-center justify-center ">
@@ -106,7 +105,7 @@ export default function Home() {
                     className="mt-4"
                   >
                     <AlgorithmIcon
-                      type={type as 'sorting' | 'pathfinding' | 'convexhull'}
+                      type={type as 'sorting' | 'path-finding' | 'convex-hull'}
                     />
                   </CardItem>
 
