@@ -9,9 +9,17 @@ import {
   Play,
   Pause,
   SkipForward,
+  SkipBack,
   RotateCcw,
 } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  dijkstra,
+  getNodeClassName,
+  getNodesInShortestPathOrder,
+  toggleWall,
+} from './utils'
+import { cloneDeep } from 'lodash'
 
 interface Node {
   row: number
@@ -26,18 +34,18 @@ interface Node {
 }
 
 const GRID_ROWS = 20
-const GRID_COLS = 50
+const GRID_COLS = 30
 
 export default function PathfindingVisualizer() {
   const [grid, setGrid] = useState<Node[][]>([])
   const [mouseIsPressed, setMouseIsPressed] = useState(false)
   const [startNode, setStartNode] = useState<{ row: number; col: number }>({
     row: 10,
-    col: 15,
+    col: 10,
   })
   const [endNode, setEndNode] = useState<{ row: number; col: number }>({
     row: 10,
-    col: 35,
+    col: 20,
   })
   const [currentTool, setCurrentTool] = useState<'wall' | 'start' | 'end'>(
     'wall',
@@ -50,6 +58,9 @@ export default function PathfindingVisualizer() {
   const [animationSpeed, setAnimationSpeed] = useState(50)
   const [totalVisitedNodes, setTotalVisitedNodes] = useState(0)
   const [shortestPathLength, setShortestPathLength] = useState(0)
+  const [isVisualized, setIsVisualized] = useState(false)
+  const [animationInterval, setAnimationInterval] =
+    useState<NodeJS.Timeout | null>(null)
 
   const createNode = (row: number, col: number): Node => {
     return {
@@ -80,6 +91,7 @@ export default function PathfindingVisualizer() {
     setCurrentStep(0)
     setTotalVisitedNodes(0)
     setShortestPathLength(0)
+    setIsVisualized(false)
   }, [startNode, endNode])
 
   useEffect(() => {
@@ -111,173 +123,142 @@ export default function PathfindingVisualizer() {
     setMouseIsPressed(false)
   }
 
-  const toggleWall = (grid: Node[][], row: number, col: number) => {
-    const newGrid = grid.slice()
-    const node = newGrid[row][col]
-    if (!node.isStart && !node.isEnd) {
-      const newNode = {
-        ...node,
-        isWall: !node.isWall,
-      }
-      newGrid[row][col] = newNode
-    }
-    return newGrid
-  }
-
-  const visualizeDijkstra = () => {
-    if (isRunning) return
+  const generateSteps = () => {
+    if (isVisualized) return
     const start = grid[startNode.row][startNode.col]
     const end = grid[endNode.row][endNode.col]
-    const visitedNodesInOrder = dijkstra(grid, start, end)
+    const output = dijkstra(grid, start, end)
     const shortestPath = getNodesInShortestPathOrder(end)
-    setVisitedNodesInOrder(visitedNodesInOrder)
+    setVisitedNodesInOrder(output)
     setNodesInShortestPath(shortestPath)
-    setTotalVisitedNodes(visitedNodesInOrder.length)
+    setTotalVisitedNodes(output.length)
     setShortestPathLength(shortestPath.length)
-    setIsRunning(true)
-    animateAlgorithm()
+    setIsVisualized(true)
   }
 
-  const animateAlgorithm = useCallback(() => {
+  const visualizeStep = useCallback(() => {
     if (
       currentStep >=
       visitedNodesInOrder.length + nodesInShortestPath.length
     ) {
       setIsRunning(false)
+      setIsPaused(true)
+      if (animationInterval) {
+        clearInterval(animationInterval)
+      }
       return
     }
 
-    if (!isPaused) {
+    setGrid((prevGrid) => {
+      const newGrid = prevGrid.slice()
+      let node
       if (currentStep < visitedNodesInOrder.length) {
-        const node = visitedNodesInOrder[currentStep]
-        setGrid((prevGrid) => {
-          const newGrid = prevGrid.slice()
-          const newNode = {
-            ...newGrid[node.row][node.col],
-            isVisited: true,
-          }
-          newGrid[node.row][node.col] = newNode
-          return newGrid
-        })
+        node = visitedNodesInOrder[currentStep]
+        newGrid[node.row][node.col] = {
+          ...newGrid[node.row][node.col],
+          isVisited: true,
+        }
       } else {
         const pathIndex = currentStep - visitedNodesInOrder.length
-        const node = nodesInShortestPath[pathIndex]
-        setGrid((prevGrid) => {
-          const newGrid = prevGrid.slice()
-          const newNode = {
-            ...newGrid[node.row][node.col],
-            isPath: true,
-          }
-          newGrid[node.row][node.col] = newNode
-          return newGrid
-        })
+        node = nodesInShortestPath[pathIndex]
+        newGrid[node.row][node.col] = {
+          ...newGrid[node.row][node.col],
+          isPath: true,
+        }
       }
-      setCurrentStep((prev) => prev + 1)
-    }
+      return newGrid
+    })
 
-    setTimeout(animateAlgorithm, 1000 - animationSpeed * 10)
-  }, [
-    currentStep,
-    visitedNodesInOrder,
-    nodesInShortestPath,
-    isPaused,
-    animationSpeed,
-  ])
+    setCurrentStep((prev) => prev + 1)
+  }, [currentStep, visitedNodesInOrder, nodesInShortestPath])
 
   useEffect(() => {
-    if (isRunning) {
-      animateAlgorithm()
+    if (isRunning && !isPaused) {
+      const interval = setInterval(visualizeStep, 5000 - animationSpeed * 10)
+      setAnimationInterval(interval)
+    } else if (animationInterval) {
+      clearInterval(animationInterval)
     }
-  }, [isRunning, animateAlgorithm])
-
-  const dijkstra = (grid: Node[][], startNode: Node, endNode: Node) => {
-    const visitedNodesInOrder = []
-    startNode.distance = 0
-    const unvisitedNodes = getAllNodes(grid)
-    while (unvisitedNodes.length) {
-      sortNodesByDistance(unvisitedNodes)
-      const closestNode = unvisitedNodes.shift()!
-      if (closestNode.isWall) continue
-      if (closestNode.distance === Infinity) return visitedNodesInOrder
-      closestNode.isVisited = true
-      visitedNodesInOrder.push(closestNode)
-      if (closestNode === endNode) return visitedNodesInOrder
-      updateUnvisitedNeighbors(closestNode, grid)
-    }
-    return visitedNodesInOrder
-  }
-
-  const sortNodesByDistance = (unvisitedNodes: Node[]) => {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
-  }
-
-  const updateUnvisitedNeighbors = (node: Node, grid: Node[][]) => {
-    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid)
-    for (const neighbor of unvisitedNeighbors) {
-      neighbor.distance = node.distance + 1
-      neighbor.previousNode = node
-    }
-  }
-
-  const getUnvisitedNeighbors = (node: Node, grid: Node[][]) => {
-    const neighbors = []
-    const { row, col } = node
-    if (row > 0) neighbors.push(grid[row - 1][col])
-    if (row < grid.length - 1) neighbors.push(grid[row + 1][col])
-    if (col > 0) neighbors.push(grid[row][col - 1])
-    if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
-    return neighbors.filter((neighbor) => !neighbor.isVisited)
-  }
-
-  const getAllNodes = (grid: Node[][]) => {
-    const nodes = []
-    for (const row of grid) {
-      for (const node of row) {
-        nodes.push(node)
+    return () => {
+      if (animationInterval) {
+        clearInterval(animationInterval)
       }
     }
-    return nodes
-  }
+  }, [isRunning, isPaused, visualizeStep, animationSpeed])
 
-  const getNodesInShortestPathOrder = (finishNode: Node) => {
-    const nodesInShortestPathOrder = []
-    let currentNode: Node | null = finishNode
-    while (currentNode !== null) {
-      nodesInShortestPathOrder.unshift(currentNode)
-      currentNode = currentNode.previousNode
+  const handleStartPause = () => {
+    if (!isVisualized) {
+      generateSteps()
     }
-    return nodesInShortestPathOrder
-  }
-
-  const getNodeClassName = (node: Node): string => {
-    if (node.isStart) return 'bg-green-500'
-    if (node.isEnd) return 'bg-red-500'
-    if (node.isPath) return 'bg-yellow-300'
-    if (node.isVisited) return 'bg-blue-300'
-    if (node.isWall) return 'bg-gray-800'
-    return 'bg-white'
-  }
-
-  const handlePauseResume = () => {
-    setIsPaused(!isPaused)
+    if (isRunning) {
+      setIsPaused(true)
+      setIsRunning(false)
+    } else {
+      setIsPaused(false)
+      setIsRunning(true)
+    }
   }
 
   const handleStepForward = () => {
     if (currentStep < visitedNodesInOrder.length + nodesInShortestPath.length) {
       setIsPaused(true)
-      setCurrentStep((prev) => prev + 1)
-      animateAlgorithm()
+      setIsRunning(false)
+      if (animationInterval) {
+        clearInterval(animationInterval)
+      }
+      visualizeStep()
+    }
+  }
+
+  const handleStepBackward = () => {
+    if (currentStep > 0) {
+      setIsPaused(true)
+      setIsRunning(false)
+      if (animationInterval) {
+        clearInterval(animationInterval)
+      }
+      setCurrentStep((prev) => prev - 1)
+      setGrid((prevGrid) => {
+        const newGrid = prevGrid.slice()
+        let node
+        if (currentStep <= visitedNodesInOrder.length) {
+          node = visitedNodesInOrder[currentStep - 1]
+          newGrid[node.row][node.col] = {
+            ...newGrid[node.row][node.col],
+            isVisited: false,
+          }
+        } else {
+          const pathIndex = currentStep - visitedNodesInOrder.length - 1
+          node = nodesInShortestPath[pathIndex]
+          newGrid[node.row][node.col] = {
+            ...newGrid[node.row][node.col],
+            isPath: false,
+          }
+        }
+        return newGrid
+      })
     }
   }
 
   const handleReset = () => {
     setIsRunning(false)
     setIsPaused(false)
+    setIsVisualized(false)
+    if (animationInterval) {
+      clearInterval(animationInterval)
+    }
     initializeGrid()
   }
 
   const handleSpeedChange = (value: number[]) => {
-    setAnimationSpeed(100 - value[0])
+    setAnimationSpeed(value[0])
+    if (isRunning && !isPaused) {
+      if (animationInterval) {
+        clearInterval(animationInterval)
+      }
+      const newInterval = setInterval(visualizeStep, 5000 - value[0] * 10)
+      setAnimationInterval(newInterval)
+    }
   }
 
   return (
@@ -287,32 +268,48 @@ export default function PathfindingVisualizer() {
         <div className="flex mb-4 space-x-2">
           <Tabs defaultValue="wall">
             <TabsList>
-              <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>Wall</TabsTrigger>
-              <TabsTrigger value="start" onClick={() => setCurrentTool('start')}>Start</TabsTrigger>
-              <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>End</TabsTrigger>
+              <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>
+                Wall
+              </TabsTrigger>
+              <TabsTrigger
+                value="start"
+                onClick={() => setCurrentTool('start')}
+              >
+                Start
+              </TabsTrigger>
+              <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>
+                End
+              </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button onClick={visualizeDijkstra} disabled={isRunning}>
-            Visualize Dijkstra's Algorithm
+          <Button onClick={generateSteps} disabled={isVisualized}>
+            Generate Steps
           </Button>
-          <Button onClick={handlePauseResume} disabled={!isRunning}>
-            {isPaused ? (
-              <Play className="w-4 h-4 mr-2" />
-            ) : (
+          <Button onClick={handleStartPause}>
+            {isRunning && !isPaused ? (
               <Pause className="w-4 h-4 mr-2" />
+            ) : (
+              <Play className="w-4 h-4 mr-2" />
             )}
-            {isPaused ? 'Resume' : 'Pause'}
+            {isRunning && !isPaused ? 'Pause' : 'Start/Resume'}
           </Button>
           <Button
             onClick={handleStepForward}
             disabled={
-              !isRunning ||
+              !isVisualized ||
               currentStep >=
                 visitedNodesInOrder.length + nodesInShortestPath.length
             }
           >
             <SkipForward className="w-4 h-4 mr-2" />
             Step Forward
+          </Button>
+          <Button
+            onClick={handleStepBackward}
+            disabled={!isVisualized || currentStep <= 0}
+          >
+            <SkipBack className="w-4 h-4 mr-2" />
+            Step Backward
           </Button>
           <Button onClick={handleReset}>
             <RotateCcw className="w-4 h-4 mr-2" />
