@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import useSorting from './useSorting'
+import useSorting from './useSorting.ts'
 import ControlPanel from './control-panel.tsx'
 import ArrayBar from './array-bar.tsx'
 
@@ -9,7 +9,7 @@ const springAnim = {
   stiffness: 300,
 }
 
-const Visualizer = () => {
+const Sorting = () => {
   const {
     arr,
     steps,
@@ -82,4 +82,4 @@ const Visualizer = () => {
   )
 }
 
-export default Visualizer
+export default Sorting
