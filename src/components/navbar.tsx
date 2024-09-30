@@ -14,16 +14,16 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-gray-900 dark:to-black p-4 transition-colors duration-300 shadow-xl">
+    <nav className="dark:text-white bg-gradient-to-r from-gray-300 to-slate-300 dark:from-gray-900 dark:to-black p-4 transition-colors duration-300 shadow-xl">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
-        <div className="text-2xl font-extrabold text-white">
+        <div className="text-2xl font-extrabold">
           Algorithm Visualizer
         </div>
         <div className="hidden md:flex space-x-6">
-          <a href="#" className="text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Home</a>
-          <a href="#" className="text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">About</a>
-          <a href="#" className="text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Services</a>
-          <a href="#" className="text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Contact</a>
+          <a href="#" className="text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Home</a>
+          <a href="#" className="text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">About</a>
+          <a href="#" className="text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Services</a>
+          <a href="#" className="text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Contact</a>
         </div>
         <label className="inline-flex items-center relative">
           <input 
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
             aria-label="Toggle Menu"
           >
             <svg
-              className="h-6 w-6 text-white dark:text-gray-300"
+              className="h-6 w-6  dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -82,10 +82,10 @@ const Navbar: React.FC = () => {
       </div>
       {isMenuOpen && (
         <div className="md:hidden mt-2 space-y-2">
-          <a href="#" className="block text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Home</a>
-          <a href="#" className="block text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">About</a>
-          <a href="#" className="block text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Services</a>
-          <a href="#" className="block text-lg font-semibold text-white hover:text-yellow-300 transition-colors duration-200">Contact</a>
+          <a href="#" className="block text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Home</a>
+          <a href="#" className="block text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">About</a>
+          <a href="#" className="block text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Services</a>
+          <a href="#" className="block text-lg font-semibold  hover:text-gray-600 transition-colors duration-200">Contact</a>
         </div>
       )}
     </nav>
