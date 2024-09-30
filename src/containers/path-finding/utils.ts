@@ -1,18 +1,35 @@
+const initializeStartNode = (grid: Node[][]) => {
+  for (const row of grid) {
+    for (const node of row) {
+      if (node.isStart) {
+        node.distance = 0
+        return node
+      }
+    }
+  }
+  throw new Error('Start node not found')
+}
 const dijkstra = (grid: Node[][], startNode: Node, endNode: Node) => {
   const visitedNodesInOrder = []
   startNode.distance = 0
   const unvisitedNodes = getAllNodes(grid)
+  initializeStartNode(grid)
   while (unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes)
     const closestNode = unvisitedNodes.shift()!
     if (closestNode.isWall) continue
-    if (closestNode.distance === Infinity) return visitedNodesInOrder
+    if (closestNode.distance === Infinity)
+      return formatVisitedNodes(visitedNodesInOrder)
     closestNode.isVisited = true
     visitedNodesInOrder.push(closestNode)
-    if (closestNode === endNode) return visitedNodesInOrder
+    if (closestNode.isEnd) return formatVisitedNodes(visitedNodesInOrder)
     updateUnvisitedNeighbors(closestNode, grid)
   }
-  return visitedNodesInOrder
+  return formatVisitedNodes(visitedNodesInOrder)
+}
+
+const formatVisitedNodes = (nodes: Node[]) => {
+  return nodes.map((node) => ({ row: node.row, col: node.col }))
 }
 
 const sortNodesByDistance = (unvisitedNodes: Node[]) => {
@@ -78,11 +95,12 @@ const toggleWall = (grid: Node[][], row: number, col: number) => {
   }
   return newGrid
 }
+
 export {
   dijkstra,
   sortNodesByDistance,
   updateUnvisitedNeighbors,
   getNodeClassName,
   getNodesInShortestPathOrder,
-  toggleWall
+  toggleWall,
 }

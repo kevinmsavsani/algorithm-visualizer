@@ -52,7 +52,9 @@ export default function PathfindingVisualizer() {
   )
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const [visitedNodesInOrder, setVisitedNodesInOrder] = useState<Node[]>([])
+  const [visitedNodesInOrder, setVisitedNodesInOrder] = useState<
+    { row: number; col: number }[]
+  >([])
   const [nodesInShortestPath, setNodesInShortestPath] = useState<Node[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [animationSpeed, setAnimationSpeed] = useState(50)
@@ -127,7 +129,7 @@ export default function PathfindingVisualizer() {
     if (isVisualized) return
     const start = grid[startNode.row][startNode.col]
     const end = grid[endNode.row][endNode.col]
-    const output = dijkstra(grid, start, end)
+    const output = dijkstra(cloneDeep(grid), start, end)
     const shortestPath = getNodesInShortestPathOrder(end)
     setVisitedNodesInOrder(output)
     setNodesInShortestPath(shortestPath)
@@ -137,54 +139,50 @@ export default function PathfindingVisualizer() {
   }
 
   const visualizeStep = useCallback(() => {
-    if (
-      currentStep >=
-      visitedNodesInOrder.length + nodesInShortestPath.length
-    ) {
-      setIsRunning(false)
-      setIsPaused(true)
-      if (animationInterval) {
-        clearInterval(animationInterval)
-      }
-      return
-    }
-
-    setGrid((prevGrid) => {
-      const newGrid = prevGrid.slice()
-      let node
-      if (currentStep < visitedNodesInOrder.length) {
-        node = visitedNodesInOrder[currentStep]
-        newGrid[node.row][node.col] = {
-          ...newGrid[node.row][node.col],
-          isVisited: true,
+      if (currentStep >= visitedNodesInOrder.length) {
+        setIsRunning(false);
+        setIsPaused(true);
+        if (animationInterval) {
+          clearInterval(animationInterval);
         }
-      } else {
-        const pathIndex = currentStep - visitedNodesInOrder.length
-        node = nodesInShortestPath[pathIndex]
-        newGrid[node.row][node.col] = {
-          ...newGrid[node.row][node.col],
-          isPath: true,
+        return;
+      }
+  
+      setGrid((prevGrid) => {
+        const newGrid = prevGrid.slice();
+        if (currentStep < visitedNodesInOrder.length) {
+          const { row, col } = visitedNodesInOrder[currentStep];
+          newGrid[row][col] = {
+            ...newGrid[row][col],
+            isVisited: true,
+          };
+        } else {
+          const pathIndex = currentStep - visitedNodesInOrder.length;
+          const node = nodesInShortestPath[pathIndex];
+          newGrid[node.row][node.col] = {
+            ...newGrid[node.row][node.col],
+            isPath: true,
+          };
         }
+        return newGrid;
+      });
+  
+      setCurrentStep((prev) => prev + 1);
+    }, [currentStep, visitedNodesInOrder, nodesInShortestPath, animationInterval]);
+  
+    useEffect(() => {
+      if (isRunning && !isPaused) {
+        const interval = setInterval(visualizeStep, 100 - animationSpeed);
+        setAnimationInterval(interval);
+      } else if (animationInterval) {
+        clearInterval(animationInterval);
       }
-      return newGrid
-    })
-
-    setCurrentStep((prev) => prev + 1)
-  }, [currentStep, visitedNodesInOrder, nodesInShortestPath])
-
-  useEffect(() => {
-    if (isRunning && !isPaused) {
-      const interval = setInterval(visualizeStep, 5000 - animationSpeed * 10)
-      setAnimationInterval(interval)
-    } else if (animationInterval) {
-      clearInterval(animationInterval)
-    }
-    return () => {
-      if (animationInterval) {
-        clearInterval(animationInterval)
-      }
-    }
-  }, [isRunning, isPaused, visualizeStep, animationSpeed])
+      return () => {
+        if (animationInterval) {
+          clearInterval(animationInterval);
+        }
+      };
+    }, [isRunning, isPaused, animationSpeed]);
 
   const handleStartPause = () => {
     if (!isVisualized) {
@@ -222,9 +220,9 @@ export default function PathfindingVisualizer() {
         const newGrid = prevGrid.slice()
         let node
         if (currentStep <= visitedNodesInOrder.length) {
-          node = visitedNodesInOrder[currentStep - 1]
-          newGrid[node.row][node.col] = {
-            ...newGrid[node.row][node.col],
+          const { row, col } = visitedNodesInOrder[currentStep - 1]
+          newGrid[row][col] = {
+            ...newGrid[row][col],
             isVisited: false,
           }
         } else {
