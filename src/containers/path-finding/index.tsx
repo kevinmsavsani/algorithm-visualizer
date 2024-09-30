@@ -11,6 +11,7 @@ import {
   SkipForward,
   SkipBack,
   RotateCcw,
+  ListRestart,
 } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -186,7 +187,7 @@ export default function PathfindingVisualizer() {
 
   useEffect(() => {
     if (isRunning && !isPaused) {
-      const interval = setInterval(visualizeStep, 1000 - animationSpeed*10)
+      const interval = setInterval(visualizeStep, 1000 - animationSpeed * 10)
       setAnimationInterval(interval)
     } else if (animationInterval) {
       clearInterval(animationInterval)
@@ -276,60 +277,70 @@ export default function PathfindingVisualizer() {
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex w-full justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Pathfinding Visualizer</h1>
-        <div className="flex mb-4 space-x-2">
-          <Tabs defaultValue="wall">
-            <TabsList>
-              <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>
-                Wall
-              </TabsTrigger>
-              <TabsTrigger
-                value="start"
-                onClick={() => setCurrentTool('start')}
-              >
-                Start
-              </TabsTrigger>
-              <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>
-                End
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Button onClick={generateSteps} disabled={isVisualized}>
-            Generate Steps
-          </Button>
-          <Button onClick={handleStartPause}>
-            {isRunning && !isPaused ? (
-              <Pause className="w-4 h-4 mr-2" />
-            ) : (
-              <Play className="w-4 h-4 mr-2" />
-            )}
+        <Tabs defaultValue="wall">
+          <TabsList>
+            <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>
+              Wall
+            </TabsTrigger>
+            <TabsTrigger value="start" onClick={() => setCurrentTool('start')}>
+              Start
+            </TabsTrigger>
+            <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>
+              End
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Button
+          onClick={generateSteps}
+          disabled={isVisualized}
+          className="rounded-full gap-2"
+          size="sm"
+        >
+          <ListRestart className="w-4 h-4 sm:hidden" />
+          <span className="hidden sm:inline">Generate Steps</span>
+        </Button>
+        <Button
+          onClick={handleStartPause}
+          className="rounded-full gap-2"
+          size="sm"
+        >
+          {isRunning && !isPaused ? (
+            <Pause className="w-4 h-4 sm:hidden" />
+          ) : (
+            <Play className="w-4 h-4 sm:hidden" />
+          )}
+          <span className="hidden sm:inline">
             {isRunning && !isPaused ? 'Pause' : 'Start/Resume'}
-          </Button>
-          <Button
-            onClick={handleStepForward}
-            disabled={
-              !isVisualized ||
-              currentStep >=
-                visitedNodesInOrder.length + nodesInShortestPath.length
-            }
-          >
-            <SkipForward className="w-4 h-4 mr-2" />
-            Step Forward
-          </Button>
-          <Button
-            onClick={handleStepBackward}
-            disabled={!isVisualized || currentStep <= 0}
-          >
-            <SkipBack className="w-4 h-4 mr-2" />
-            Step Backward
-          </Button>
-          <Button onClick={handleReset}>
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Reset
-          </Button>
-        </div>
+          </span>
+        </Button>
+        <Button
+          onClick={handleStepForward}
+          className="rounded-full gap-2"
+          size="sm"
+          disabled={
+            !isVisualized ||
+            currentStep >=
+              visitedNodesInOrder.length + nodesInShortestPath.length
+          }
+        >
+          <SkipForward className="w-4 h-4 sm:hidden" />
+          <span className="hidden sm:inline">Step Forward</span>
+        </Button>
+        <Button
+          onClick={handleStepBackward}
+          className="rounded-full gap-2"
+          size="sm"
+          disabled={!isVisualized || currentStep <= 0}
+        >
+          <SkipBack className="w-4 h-4 sm:hidden" />
+          <span className="hidden sm:inline">Step Backward</span>
+        </Button>
+        <Button onClick={handleReset} className="rounded-full gap-2" size="sm">
+          <RotateCcw className="w-4 h-4 sm:hidden" />
+          <span className="hidden sm:inline">Reset</span>
+        </Button>
       </div>
-      <div className="mb-4 flex items-center space-x-4">
+      <div className="m-4 flex items-center space-x-4">
         <span>Animation Speed:</span>
         <Slider
           defaultValue={[50]}
