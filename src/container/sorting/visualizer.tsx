@@ -37,6 +37,8 @@ const Visualizer = () => {
       })
   }, [])
 
+  const previousArray = steps[currentStep - 1] || arr
+
   return (
     <div>
       <div className="bg-gray-100 dark:bg-black p-4">
@@ -64,13 +66,17 @@ const Visualizer = () => {
         </div>
       </div>
       <div className="flex justify-center items-end mt-8 space-x-1">
-        {(steps[currentStep] || arr).map((element) => (
-          <ArrayBar
-            key={element.id}
-            element={element}
-            springAnim={springAnim}
-          />
-        ))}
+        {(steps[currentStep] || arr).map((element, index) => {
+          const hasChanged = previousArray[index]?.value !== element.value
+          return (
+            <ArrayBar
+              key={element.id}
+              element={element}
+              springAnim={springAnim}
+              hasChanged={hasChanged}
+            />
+          )
+        })}
       </div>
     </div>
   )

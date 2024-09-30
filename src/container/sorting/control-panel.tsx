@@ -70,11 +70,6 @@ const ControlPanel = ({
         >
           Merge Sort
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleAlgorithmSelection('Quick Sort')}
-        >
-          Quick Sort
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
     <Button variant="outline" onClick={sortFunc}>

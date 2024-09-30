@@ -1,5 +1,7 @@
 const mergeSort = (arr) => {
   let steps = [];
+  let originalArray = [...arr];
+
   const merge = (left, right) => {
     let result = [];
     while (left.length && right.length) {
@@ -12,17 +14,24 @@ const mergeSort = (arr) => {
     return result.concat(left, right);
   };
 
-  const mergeSortRecursive = (array) => {
+  const mergeSortRecursive = (array, startIndex) => {
     if (array.length <= 1) return array;
     const mid = Math.floor(array.length / 2);
-    const left = mergeSortRecursive(array.slice(0, mid));
-    const right = mergeSortRecursive(array.slice(mid));
+    const left = mergeSortRecursive(array.slice(0, mid), startIndex);
+    const right = mergeSortRecursive(array.slice(mid), startIndex + mid);
     const merged = merge(left, right);
-    steps.push([...merged]);
+
+    // Update the original array with the merged result
+    for (let i = 0; i < merged.length; i++) {
+      originalArray[startIndex + i] = merged[i];
+    }
+
+    // Push a copy of the updated original array to steps
+    steps.push([...originalArray]);
     return merged;
   };
 
-  mergeSortRecursive(arr);
+  mergeSortRecursive(arr, 0);
   return steps;
 };
 

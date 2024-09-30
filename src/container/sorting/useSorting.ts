@@ -2,7 +2,6 @@ import { useState } from 'react'
 import bubbleSort from './algorithms/bubble-sort'
 import selectionSort from './algorithms/selection-sort'
 import mergeSort from './algorithms/merge-sort'
-import quickSort from './algorithms/quick-sort'
 
 const useSorting = () => {
   const [arr, setArr] = useState([])
@@ -18,7 +17,6 @@ const useSorting = () => {
     else if (selectedMethod === 'Selection Sort')
       sortedSteps = selectionSort(arr)
     else if (selectedMethod === 'Merge Sort') sortedSteps = mergeSort(arr)
-    else if (selectedMethod === 'Quick Sort') sortedSteps = quickSort(arr)
 
     setSteps([arr, ...sortedSteps])
     setCurrentStep(0)
