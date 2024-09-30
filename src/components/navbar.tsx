@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Navbar: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleDarkMode = () => {
@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-gray-800 dark:to-gray-900 p-4 transition-colors duration-300 shadow-lg">
+    <nav className="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-gray-900 dark:to-black p-4 transition-colors duration-300 shadow-xl">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <div className="text-2xl font-extrabold text-white">
           Algorithm Visualizer

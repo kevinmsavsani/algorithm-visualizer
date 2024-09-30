@@ -21,29 +21,21 @@ const ControlPanel = ({
   resumeSorting,
 }) => (
   <div className="flex justify-center mt-4 space-x-4">
-    <Button
-      className="bg-gray-500 text-white"
-      onClick={prevStep}
-      disabled={currentStep === 0}
-    >
+    <Button variant="outline" onClick={prevStep} disabled={currentStep === 0}>
       Previous
     </Button>
-    <Button
-      className="bg-gray-500 text-white"
-      onClick={resetSteps}
-      disabled={currentStep === 0}
-    >
+    <Button variant="outline" onClick={resetSteps} disabled={currentStep === 0}>
       Reset
     </Button>
     <Button
-      className="bg-gray-500 text-white"
+      variant="outline"
       onClick={nextStep}
       disabled={currentStep === steps.length - 1}
     >
       Next
     </Button>
     <Button
-      className="bg-gray-500 text-white"
+      variant="outline"
       onClick={() => {
         isPaused ? resumeSorting() : pauseSorting()
       }}
@@ -51,7 +43,7 @@ const ControlPanel = ({
       {isPaused ? 'Resume' : 'Pause'}
     </Button>
     <Button
-      className="bg-blue-500 text-white"
+      variant="outline"
       onClick={() => {
         createArray(method)
       }}
@@ -60,7 +52,7 @@ const ControlPanel = ({
     </Button>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-blue-500 text-white">{method}</Button>
+        <Button variant="outline">{method}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem
@@ -85,7 +77,7 @@ const ControlPanel = ({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-    <Button className="bg-green-500 text-white" onClick={sortFunc}>
+    <Button variant="outline" onClick={sortFunc}>
       Sort
     </Button>
   </div>

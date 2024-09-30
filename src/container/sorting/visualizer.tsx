@@ -39,7 +39,7 @@ const Visualizer = () => {
 
   return (
     <div>
-      <div className="bg-gray-100 dark:bg-gray-800 p-4">
+      <div className="bg-gray-100 dark:bg-black p-4">
         <div className="flex justify-between items-center">
           <a
             className="text-xl font-bold text-gray-900 dark:text-gray-100"
