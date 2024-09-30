@@ -130,7 +130,7 @@ export default function PathfindingVisualizer() {
     const start = grid[startNode.row][startNode.col]
     const end = grid[endNode.row][endNode.col]
     const output = dijkstra(cloneDeep(grid), start, end)
-    const shortestPath = getNodesInShortestPathOrder(end)
+    const shortestPath = getNodesInShortestPathOrder(output[output.length - 1])
     setVisitedNodesInOrder(output)
     setNodesInShortestPath(shortestPath)
     setTotalVisitedNodes(output.length)
@@ -139,7 +139,7 @@ export default function PathfindingVisualizer() {
   }
 
   const visualizeStep = useCallback(() => {
-      if (currentStep >= visitedNodesInOrder.length) {
+      if (currentStep >= visitedNodesInOrder.length + nodesInShortestPath.length) {
         setIsRunning(false);
         setIsPaused(true);
         if (animationInterval) {

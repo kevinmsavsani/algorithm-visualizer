@@ -18,18 +18,13 @@ const dijkstra = (grid: Node[][], startNode: Node, endNode: Node) => {
     sortNodesByDistance(unvisitedNodes)
     const closestNode = unvisitedNodes.shift()!
     if (closestNode.isWall) continue
-    if (closestNode.distance === Infinity)
-      return formatVisitedNodes(visitedNodesInOrder)
+    if (closestNode.distance === Infinity) return visitedNodesInOrder
     closestNode.isVisited = true
     visitedNodesInOrder.push(closestNode)
-    if (closestNode.isEnd) return formatVisitedNodes(visitedNodesInOrder)
+    if (closestNode.isEnd) return visitedNodesInOrder
     updateUnvisitedNeighbors(closestNode, grid)
   }
-  return formatVisitedNodes(visitedNodesInOrder)
-}
-
-const formatVisitedNodes = (nodes: Node[]) => {
-  return nodes.map((node) => ({ row: node.row, col: node.col }))
+  return visitedNodesInOrder
 }
 
 const sortNodesByDistance = (unvisitedNodes: Node[]) => {
