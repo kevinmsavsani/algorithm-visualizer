@@ -15,12 +15,13 @@ import {
 } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  dijkstra,
   getNodeClassName,
   getNodesInShortestPathOrder,
   toggleWall,
 } from './utils'
 import { cloneDeep } from 'lodash'
+import dijkstra from './algorithms/dijkstra'
+import TabsComponent from './tabs'
 
 interface Node {
   row: number
@@ -277,19 +278,7 @@ export default function PathfindingVisualizer() {
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex w-full justify-between items-center">
-        <Tabs defaultValue="wall">
-          <TabsList>
-            <TabsTrigger value="wall" onClick={() => setCurrentTool('wall')}>
-              Wall
-            </TabsTrigger>
-            <TabsTrigger value="start" onClick={() => setCurrentTool('start')}>
-              Start
-            </TabsTrigger>
-            <TabsTrigger value="end" onClick={() => setCurrentTool('end')}>
-              End
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <TabsComponent setCurrentTool={setCurrentTool} />
         <Button
           onClick={generateSteps}
           disabled={isVisualized}
