@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <nav className="dark:text-white bg-gradient-to-r from-gray-300 to-slate-300 dark:from-gray-900 dark:to-black p-4 transition-colors duration-300 shadow-xl">
+    <nav className="fixed w-full dark:text-white bg-gradient-to-r from-gray-300 to-slate-300 dark:from-gray-900 dark:to-black p-4 transition-colors duration-300 shadow-xl">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <Link to="/">
           <div className="flex gap-4 items-center">

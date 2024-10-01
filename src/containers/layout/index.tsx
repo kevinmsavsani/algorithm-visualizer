@@ -5,7 +5,7 @@ function Layout() {
   return (
       <div>
         <Navbar />
-        <div className="">
+        <div className="pt-12">
           <Outlet />
         </div>
       </div>

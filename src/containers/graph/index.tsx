@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PlayIcon, PauseIcon } from 'lucide-react'
+import { aStar, bellmanFord, bfs, dfs, dijkstra, floydWarshall, kruskal, prim, topologicalSort } from './algorithm'
 
 interface Node {
   id: number
@@ -110,54 +111,32 @@ const GraphVisualization: React.FC = () => {
     resetVisualization()
   }
 
-  const bfs = (startNode: number): number[] => {
-    const visited = new Set<number>()
-    const queue: number[] = [startNode]
-    const order: number[] = []
-
-    while (queue.length > 0) {
-      const node = queue.shift()!
-      if (!visited.has(node)) {
-        visited.add(node)
-        order.push(node)
-        graph.edges
-          .filter((e) => e.source === node || e.target === node)
-          .forEach((e) => {
-            const neighbor = e.source === node ? e.target : e.source
-            if (!visited.has(neighbor)) {
-              queue.push(neighbor)
-            }
-          })
-      }
-    }
-
-    return order
-  }
-
-  const dfs = (startNode: number): number[] => {
-    const visited = new Set<number>()
-    const order: number[] = []
-
-    const dfsRecursive = (node: number) => {
-      visited.add(node)
-      order.push(node)
-      graph.edges
-        .filter((e) => e.source === node || e.target === node)
-        .forEach((e) => {
-          const neighbor = e.source === node ? e.target : e.source
-          if (!visited.has(neighbor)) {
-            dfsRecursive(neighbor)
-          }
-        })
-    }
-
-    dfsRecursive(startNode)
-    return order
-  }
-
   const generateSteps = () => {
     const startNode = graph.nodes[0]?.id ?? 0
-    const order = algorithm === 'bfs' ? bfs(startNode) : dfs(startNode)
+    const order = (() => {
+      switch (algorithm) {
+        case 'bfs':
+          return bfs(graph, startNode)
+        case 'dfs':
+          return dfs(graph, startNode)
+        case 'dijkstra':  
+          return dijkstra(graph, startNode)
+        case 'astar':
+          return aStar(graph, startNode)
+        case 'prim':
+          return prim(graph, startNode)
+        case 'kruskal':
+          return kruskal(graph, startNode)
+        case 'bellman-ford':
+          return bellmanFord(graph, startNode)
+        case 'floyd-warshall':
+          return floydWarshall(graph, startNode)
+        case 'topological-sort':
+          return topologicalSort(graph, startNode)
+        default:
+          throw new Error(`Unknown algorithm: ${algorithm}`)
+      }
+    })()
     setTraversalOrder(order)
     setCurrentStep(-1)
     setStepsGenerated(true)
@@ -257,18 +236,23 @@ const GraphVisualization: React.FC = () => {
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Select algorithm" />
           </SelectTrigger>
-          <SelectContent >
+          <SelectContent>
             <SelectItem value="bfs">Breadth-First Search</SelectItem>
             <SelectItem value="dfs">Depth-First Search</SelectItem>
+            <SelectItem value="dijkstra">Dijkstra</SelectItem>
+            <SelectItem value="astar">A*</SelectItem>
+            <SelectItem value="prim">Prim's</SelectItem>
+            <SelectItem value="kruskal">Kruskal</SelectItem>
+            <SelectItem value="bellman-ford">Bellman-Ford</SelectItem>
+            <SelectItem value="floyd-warshall">Floyd-Warshall</SelectItem>
+            <SelectItem value="topological-sort">Topological Sort</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={generateSteps} disabled={graph.nodes.length === 0}>
           Generate Steps
         </Button>
         <div className="flex items-center space-x-2 col-span-1 md:col-span-2">
-          <Label htmlFor="speed">
-            Animation Speed:
-          </Label>
+          <Label htmlFor="speed">Animation Speed:</Label>
           <Slider
             id="speed"
             min={100}
@@ -308,7 +292,7 @@ const GraphVisualization: React.FC = () => {
         height="auto"
         viewBox={`0 0 ${GRID_SIZE * CELL_SIZE} ${GRID_SIZE * CELL_SIZE}`}
         className="border border-gray-300 dark:border-gray-700 w-full sm:w-3/5 lg:w-1/2"
-        >
+      >
         <g>
           {/* Grid */}
           {Array.from({ length: GRID_SIZE }).map((_, i) => (
@@ -414,7 +398,8 @@ const GraphVisualization: React.FC = () => {
           Traversal Order: {traversalOrder.join(' -> ')}
         </div>
         <div>
-          Current Step: {currentStep >= 0 ? currentStep + 1 : 0} / {traversalOrder.length}
+          Current Step: {currentStep >= 0 ? currentStep + 1 : 0} /{' '}
+          {traversalOrder.length}
         </div>
       </div>
     </div>
