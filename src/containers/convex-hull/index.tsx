@@ -14,11 +14,39 @@ export default function ConvexHullVisualizer() {
   const [points, setPoints] = useState<Point[]>([])
   const [hull, setHull] = useState<Point[]>([])
   const [animationSteps, setAnimationSteps] = useState<Point[][]>([])
+  const [currentStep, setCurrentStep] = useState<number>(-1) // Track the current step index
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isGenerating, setIsGenerating] = useState<boolean>(false) // To track if the hull is being generated
+  const [isPaused, setIsPaused] = useState<boolean>(true) // Track if the animation is paused
+  const [animationIntervalId, setAnimationIntervalId] =
+    useState<NodeJS.Timeout | null>(null) // Track the animation interval
 
   useEffect(() => {
     drawCanvas()
-  }, [points, hull, animationSteps])
+  }, [points, hull, animationSteps, currentStep])
+
+  useEffect(() => {
+    // Start or stop the animation loop based on isPaused and currentStep
+    if (!isPaused && animationSteps.length > 0) {
+      const intervalId = setInterval(() => {
+        stepForward()
+      }, 1000) // Adjust the speed of the animation by changing the interval (in ms)
+      setAnimationIntervalId(intervalId)
+    } else {
+      // Clear the interval if paused or if there are no steps
+      if (animationIntervalId) {
+        clearInterval(animationIntervalId)
+        setAnimationIntervalId(null)
+      }
+    }
+
+    return () => {
+      // Cleanup on component unmount
+      if (animationIntervalId) {
+        clearInterval(animationIntervalId)
+      }
+    }
+  }, [isPaused, currentStep, animationSteps])
 
   const drawCanvas = () => {
     const canvas = canvasRef.current
@@ -32,7 +60,7 @@ export default function ConvexHullVisualizer() {
     // Draw grid
     drawGrid(ctx)
 
-    // Draw points
+    // Draw all points
     ctx.fillStyle = 'white' // Change to white for better visibility in dark mode
     points.forEach((point) => {
       ctx.beginPath()
@@ -40,8 +68,9 @@ export default function ConvexHullVisualizer() {
       ctx.fill()
     })
 
-    // Draw animated steps
-    animationSteps.forEach((step, index) => {
+    // Draw current step only if valid
+    if (currentStep >= 0 && currentStep < animationSteps.length) {
+      const step = animationSteps[currentStep]
       ctx.strokeStyle = 'red'
       ctx.setLineDash([5, 3])
       for (let i = 0; i < step.length - 1; i++) {
@@ -51,17 +80,19 @@ export default function ConvexHullVisualizer() {
         ctx.stroke()
         ctx.closePath()
       }
-    })
+    }
 
-    // Draw final convex hull
-    ctx.strokeStyle = 'blue'
-    ctx.setLineDash([])
-    for (let i = 0; i < hull.length - 1; i++) {
-      ctx.beginPath()
-      ctx.moveTo(hull[i].x, hull[i].y)
-      ctx.lineTo(hull[i + 1].x, hull[i + 1].y)
-      ctx.stroke()
-      ctx.closePath()
+    // Draw final convex hull only when all steps are completed
+    if (currentStep === animationSteps.length - 1) {
+      ctx.strokeStyle = 'blue'
+      ctx.setLineDash([])
+      for (let i = 0; i < hull.length - 1; i++) {
+        ctx.beginPath()
+        ctx.moveTo(hull[i].x, hull[i].y)
+        ctx.lineTo(hull[i + 1].x, hull[i + 1].y)
+        ctx.stroke()
+        ctx.closePath()
+      }
     }
   }
 
@@ -102,6 +133,13 @@ export default function ConvexHullVisualizer() {
     setPoints([])
     setHull([])
     setAnimationSteps([])
+    setCurrentStep(-1) // Reset current step
+    setIsGenerating(false) // Reset generating state
+    setIsPaused(true) // Pause the animation
+    if (animationIntervalId) {
+      clearInterval(animationIntervalId) // Clear any existing animation interval
+      setAnimationIntervalId(null) // Reset interval ID
+    }
   }
 
   const createRandomPoints = () => {
@@ -112,6 +150,13 @@ export default function ConvexHullVisualizer() {
     setPoints(newPoints)
     setHull([])
     setAnimationSteps([])
+    setCurrentStep(-1) // Reset current step
+    setIsGenerating(false) // Reset generating state
+    setIsPaused(true) // Pause the animation
+    if (animationIntervalId) {
+      clearInterval(animationIntervalId) // Clear any existing animation interval
+      setAnimationIntervalId(null) // Reset interval ID
+    }
   }
 
   const compare = (a: Point, b: Point) => {
@@ -126,12 +171,13 @@ export default function ConvexHullVisualizer() {
     return val > 0 ? 1 : -1
   }
 
-  const convexHull = () => {
+  const generateConvexHullSteps = () => {
     if (points.length < 3) {
       alert('At least 3 points are required to form a convex hull')
       return
     }
 
+    setIsGenerating(true)
     const sortedPoints = [...points].sort(compare)
     const n = sortedPoints.length
     const p1 = sortedPoints[0],
@@ -143,41 +189,96 @@ export default function ConvexHullVisualizer() {
     up.push(p1)
     lo.push(p1)
 
+    // Record initial points
+    animateSteps.push([...up, ...lo]) // Record initial step
+
     for (let i = 1; i < n; i++) {
       if (i === n - 1 || orientation(p1, sortedPoints[i], p2) !== -1) {
-        animateSteps.push([...up])
         while (
           up.length >= 2 &&
           orientation(up[up.length - 2], up[up.length - 1], sortedPoints[i]) ===
             -1
         ) {
           up.pop()
-          animateSteps.push([...up])
+          animateSteps.push([...up, ...lo]) // Record the step after popping
         }
         up.push(sortedPoints[i])
       }
       if (i === n - 1 || orientation(p1, sortedPoints[i], p2) !== 1) {
-        animateSteps.push([...lo])
         while (
           lo.length >= 2 &&
           orientation(lo[lo.length - 2], lo[lo.length - 1], sortedPoints[i]) ===
             1
         ) {
           lo.pop()
-          animateSteps.push([...lo])
+          animateSteps.push([...up, ...lo]) // Record the step after popping
         }
         lo.push(sortedPoints[i])
       }
+      // Record the current state after adding points
+      animateSteps.push([...up, ...lo])
     }
 
     const result = [...up.slice(0, up.length - 1), ...lo.reverse()]
     setHull(result)
     setAnimationSteps(animateSteps)
+    setCurrentStep(0) // Reset current step to the first step
+    setIsGenerating(false) // Reset generating state after hull generation
+  }
+
+  const stepForward = () => {
+    if (currentStep < animationSteps.length - 1) {
+      setCurrentStep((prev) => prev + 1)
+    } else {
+      setCurrentStep(animationSteps.length - 1) // Stop at the last step
+    }
+  }
+
+  const stepBackward = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1)
+    }
+  }
+
+  const handleStartPause = () => {
+    setIsPaused((prev) => !prev)
   }
 
   return (
     <div className="flex flex-col items-center p-4 dark:bg-gray-900 dark:text-white">
       <h1 className="text-2xl font-bold mb-4">Convex Hull Visualizer</h1>
+      <div className="flex gap-4 mb-4">
+        <Button onClick={createRandomPoints} variant="outline">
+          Random Points
+        </Button>
+        <Button
+          onClick={generateConvexHullSteps}
+          variant="outline"
+          disabled={isGenerating}
+        >
+          Generate
+        </Button>
+        <Button onClick={handleStartPause} variant="outline">
+          {!isPaused ? 'Pause' : 'Start/Resume'}
+        </Button>
+        <Button onClick={clearBoard} variant="outline">
+          Clear
+        </Button>
+        <Button
+          onClick={stepBackward}
+          disabled={currentStep <= 0}
+          variant="outline"
+        >
+          Step Backward
+        </Button>
+        <Button
+          onClick={stepForward}
+          disabled={currentStep >= animationSteps.length - 1}
+          variant="outline"
+        >
+          Step Forward
+        </Button>
+      </div>
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
@@ -185,26 +286,6 @@ export default function ConvexHullVisualizer() {
         className="border border-gray-300 dark:border-gray-700 mb-4 cursor-crosshair"
         onClick={addPoint}
       />
-      <div className="flex gap-4 mb-4">
-        <Button
-          onClick={createRandomPoints}
-          className="dark:bg-gray-700 dark:text-white"
-        >
-          Random Points
-        </Button>
-        <Button
-          onClick={convexHull}
-          className="dark:bg-gray-700 dark:text-white"
-        >
-          Compute Convex Hull
-        </Button>
-        <Button
-          onClick={clearBoard}
-          className="dark:bg-gray-700 dark:text-white"
-        >
-          Clear
-        </Button>
-      </div>
     </div>
   )
 }
