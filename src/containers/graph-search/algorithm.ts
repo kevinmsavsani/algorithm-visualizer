@@ -16,14 +16,13 @@ interface Graph {
   edges: Edge[]
 }
 
-export const bfs = (graph: Graph, startNode: number, endNode: number): number[] => {
+export const bfs = (graph: Graph, startNode: number, endNode: number): Edge[] => {
   const visited = new Set<number>()
-  const queue: number[][] = [[startNode]]
-  const path: number[] = []
+  const queue: { path: Edge[], node: number }[] = [{ path: [], node: startNode }]
+  const path: Edge[] = []
 
   while (queue.length > 0) {
-    const currentPath = queue.shift()!
-    const node = currentPath[currentPath.length - 1]
+    const { path: currentPath, node } = queue.shift()!
 
     if (node === endNode) {
       return currentPath
@@ -36,7 +35,7 @@ export const bfs = (graph: Graph, startNode: number, endNode: number): number[] 
         .forEach((e: Edge) => {
           const neighbor = e.source === node ? e.target : e.source
           if (!visited.has(neighbor)) {
-            queue.push([...currentPath, neighbor])
+            queue.push({ path: [...currentPath, e], node: neighbor })
           }
         })
     }
@@ -45,14 +44,13 @@ export const bfs = (graph: Graph, startNode: number, endNode: number): number[] 
   return path
 }
 
-export const dfs = (graph: Graph, startNode: number, endNode: number): number[] => {  
+export const dfs = (graph: Graph, startNode: number, endNode: number): Edge[] => {  
   const visited = new Set<number>()
-  const stack: number[][] = [[startNode]]
-  const path: number[] = []
+  const stack: { path: Edge[], node: number }[] = [{ path: [], node: startNode }]
+  const path: Edge[] = []
 
   while (stack.length > 0) {
-    const currentPath = stack.pop()!
-    const node = currentPath[currentPath.length - 1]
+    const { path: currentPath, node } = stack.pop()!
 
     if (node === endNode) {
       return currentPath
@@ -65,7 +63,7 @@ export const dfs = (graph: Graph, startNode: number, endNode: number): number[] 
         .forEach((e: Edge) => {
           const neighbor = e.source === node ? e.target : e.source
           if (!visited.has(neighbor)) {
-            stack.push([...currentPath, neighbor])
+            stack.push({ path: [...currentPath, e], node: neighbor })
           }
         })
     }
@@ -74,9 +72,9 @@ export const dfs = (graph: Graph, startNode: number, endNode: number): number[] 
   return path
 }
 
-export const dijkstra = (graph: Graph, startNode: number, endNode: number): number[] => {
+export const dijkstra = (graph: Graph, startNode: number, endNode: number): Edge[] => {
   const distances: { [key: number]: number } = {};
-  const previous: { [key: number]: number | null } = {};
+  const previous: { [key: number]: Edge | null } = {};
   const pq = new PriorityQueue<{ node: number; distance: number }>((a, b) => a.distance < b.distance);
 
   graph.nodes.forEach(node => {
@@ -100,23 +98,24 @@ export const dijkstra = (graph: Graph, startNode: number, endNode: number): numb
         const newDistance = distances[currentNode] + edge.weight;
         if (newDistance < distances[neighbor]) {
           distances[neighbor] = newDistance;
-          previous[neighbor] = currentNode;
+          previous[neighbor] = edge;
           pq.queue({ node: neighbor, distance: newDistance });
         }
       });
   }
 
-  const path: number[] = [];
+  const path: Edge[] = [];
   let currentNode = endNode;
-  while (currentNode !== null) {
-    path.unshift(currentNode);
-    currentNode = previous[currentNode];
+  while (previous[currentNode] !== null) {
+    const edge = previous[currentNode]!;
+    path.unshift(edge);
+    currentNode = edge.source === currentNode ? edge.target : edge.source;
   }
 
-  return path[0] === startNode ? path : [];
+  return path;
 }
 
-export const floydWarshall = (graph: Graph, startNode: number, endNode: number): number[] => {
+export const floydWarshall = (graph: Graph, startNode: number, endNode: number): Edge[] => {
   const numNodes = graph.nodes.length;
   const dist: number[][] = Array.from({ length: numNodes }, () => Array(numNodes).fill(Infinity));
   const next: (number | null)[][] = Array.from({ length: numNodes }, () => Array(numNodes).fill(null));
@@ -143,24 +142,27 @@ export const floydWarshall = (graph: Graph, startNode: number, endNode: number):
     }
   }
 
-  const path: number[] = [];
+  const path: Edge[] = [];
   if (next[startNode][endNode] === null) {
     return path;
   }
 
   let currentNode = startNode;
   while (currentNode !== endNode) {
-    path.push(currentNode);
-    currentNode = next[currentNode][endNode]!;
+    const nextNode = next[currentNode][endNode]!;
+    const edge = graph.edges.find(e => (e.source === currentNode && e.target === nextNode) || (e.source === nextNode && e.target === currentNode));
+    if (edge) {
+      path.push(edge);
+    }
+    currentNode = nextNode;
   }
-  path.push(endNode);
 
   return path;
 }
 
-export const bellmanFord = (graph: Graph, startNode: number, endNode: number): number[] => {
+export const bellmanFord = (graph: Graph, startNode: number, endNode: number): Edge[] => {
   const distances: { [key: number]: number } = {};
-  const previous: { [key: number]: number | null } = {};
+  const previous: { [key: number]: Edge | null } = {};
 
   graph.nodes.forEach(node => {
     distances[node.id] = Infinity;
@@ -173,7 +175,7 @@ export const bellmanFord = (graph: Graph, startNode: number, endNode: number): n
       const { source, target, weight } = edge;
       if (distances[source] !== Infinity && distances[source] + weight < distances[target]) {
         distances[target] = distances[source] + weight;
-        previous[target] = source;
+        previous[target] = edge;
       }
     }
   }
@@ -186,14 +188,15 @@ export const bellmanFord = (graph: Graph, startNode: number, endNode: number): n
     }
   }
 
-  const path: number[] = [];
+  const path: Edge[] = [];
   let currentNode = endNode;
-  while (currentNode !== null) {
-    path.unshift(currentNode);
-    currentNode = previous[currentNode];
+  while (previous[currentNode] !== null) {
+    const edge = previous[currentNode]!;
+    path.unshift(edge);
+    currentNode = edge.source === currentNode ? edge.target : edge.source;
   }
 
-  return path[0] === startNode ? path : [];
+  return path;
 }
 
 const heuristic = (graph: Graph, nodeA: number, nodeB: number): number => {
@@ -202,9 +205,9 @@ const heuristic = (graph: Graph, nodeA: number, nodeB: number): number => {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 }
 
-export const aStar = (graph: Graph, startNode: number, endNode: number): number[] => {
+export const aStar = (graph: Graph, startNode: number, endNode: number): Edge[] => {
   const openSet = new PriorityQueue<{ node: number; fScore: number }>((a, b) => a.fScore < b.fScore);
-  const cameFrom: { [key: number]: number | null } = {};
+  const cameFrom: { [key: number]: Edge | null } = {};
   const gScore: { [key: number]: number } = {};
   const fScore: { [key: number]: number } = {};
 
@@ -221,11 +224,16 @@ export const aStar = (graph: Graph, startNode: number, endNode: number): number[
     const current = openSet.dequeue()!.node;
 
     if (current === endNode) {
-      const path: number[] = [];
+      const path: Edge[] = [];
       let step: number | null = endNode;
       while (step !== null) {
-        path.unshift(step);
-        step = cameFrom[step];
+        const edge = cameFrom[step];
+        if (edge) {
+          path.unshift(edge);
+          step = edge.source === step ? edge.target : edge.source;
+        } else {
+          step = null;
+        }
       }
       return path;
     }
@@ -237,7 +245,7 @@ export const aStar = (graph: Graph, startNode: number, endNode: number): number[
         const tentativeGScore = gScore[current] + edge.weight;
 
         if (tentativeGScore < gScore[neighbor]) {
-          cameFrom[neighbor] = current;
+          cameFrom[neighbor] = edge;
           gScore[neighbor] = tentativeGScore;
           fScore[neighbor] = gScore[neighbor] + heuristic(graph, neighbor, endNode);
           if (!openSet.items.some(item => item.node === neighbor)) {

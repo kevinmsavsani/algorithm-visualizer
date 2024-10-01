@@ -6,7 +6,7 @@ import { Edge } from '@/types'
 
 interface NewGraphProps {
   graph: any
-  result: number[]
+  result: Edge[]
   currentStep: number
   isAllowClick?: boolean
   setStartNode?: (id: number) => void
@@ -76,25 +76,21 @@ const NewGraph: React.FC<NewGraphProps> = ({
 
   const getEdgeColor = (edge: Edge) => {
     if (currentStep >= 0 && currentStep < result.length - 1) {
-      const currentNode = result[currentStep]
-      const nextNode = result[currentStep + 1]
+      const currentEdge = result[currentStep]
       if (
-        (edge.source === currentNode && edge.target === nextNode) ||
-        (edge.source === nextNode && edge.target === currentNode)
+        edge.source === currentEdge.source &&
+        edge.target === currentEdge.target
       ) {
         return 'stroke-blue dark:stroke-blue-300'
       }
     }
     if (currentStep === result.length - 1) {
-      for (let i = 0; i < result.length - 1; i++) {
-        const node = result[i]
-        const nextNode = result[i + 1]
-        if (
-          (edge.source === node && edge.target === nextNode) ||
-          (edge.source === nextNode && edge.target === node)
-        ) {
-          return 'stroke-green dark:stroke-green-300'
-        }
+      if (
+        result.some(
+          (e) => ((e.source === edge.source && e.target === edge.target) || (e.source === edge.target && e.target === edge.source))
+        )
+      ) {
+        return 'stroke-green dark:stroke-green-300'
       }
     }
     return 'stroke-black dark:stroke-gray-400'
@@ -178,11 +174,13 @@ const NewGraph: React.FC<NewGraphProps> = ({
           {/* Nodes */}
           <AnimatePresence>
             {graph.nodes.map((node) => {
-              const isVisited = result
-                .slice(0, currentStep + 1)
-                .includes(node.id)
+              const isVisited = result.some(
+                (edge) => edge.source === node.id || edge.target === node.id,
+              )
               const isCurrent =
-                currentStep >= 0 && result[currentStep] === node.id
+                currentStep >= 0 &&
+                (result[currentStep].source === node.id ||
+                  result[currentStep].target === node.id)
               const isStart = node.id === startNode
               const isEnd = node.id === endNode
               return (
@@ -236,7 +234,9 @@ const NewGraph: React.FC<NewGraphProps> = ({
                 height={CELL_SIZE}
                 fill="transparent"
                 onClick={() =>
-                  isAllowClick ? handleGridClick(col * CELL_SIZE, row * CELL_SIZE): ''
+                  isAllowClick
+                    ? handleGridClick(col * CELL_SIZE, row * CELL_SIZE)
+                    : ''
                 }
                 style={{ cursor: 'pointer' }}
               />
@@ -245,7 +245,12 @@ const NewGraph: React.FC<NewGraphProps> = ({
         </g>
       </svg>
       <div className="mt-4 text-center">
-        <div className="mb-2">Traversal Order: {result.join(' -> ')}</div>
+        <div className="mb-2">
+          Traversal Order:{' '}
+          {result
+            .map((edge) => `${edge.source} -> ${edge.target}`)
+            .join(' -> ')}
+        </div>
         <div>
           Current Step: {currentStep >= 0 ? currentStep + 1 : 0} /{' '}
           {result.length}

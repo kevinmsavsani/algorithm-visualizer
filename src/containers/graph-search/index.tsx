@@ -13,10 +13,11 @@ import {
   floydWarshall,
 } from './algorithm'
 import NewGraph from './new-graph'
+import { Edge } from '@/types'
 
 export default function GraphSearchVisualization() {
   const [totalNodes, setTotalNodes] = useState(10)
-  const [result, setResult] = useState<number[]>([])
+  const [result, setResult] = useState<Edge[]>([])
   const [selectedNode, setSelectedNode] = useState<number | null>(null)
   const [startNode, setStartNode] = useState<number | null>(null)
   const [endNode, setEndNode] = useState<number | null>(null)
