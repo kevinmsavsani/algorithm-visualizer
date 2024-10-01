@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ControlPanel } from './control-panel'
-import { Graph } from './graph'
-import { useAlgorithm } from './useAlgorithm'
+import { ControlPanel } from '../../components/graph/control-panel'
+import { Graph } from '../../components/graph/graph'
+import { useAlgorithm } from '../../components/graph/useAlgorithm'
 import { boruvka, kruskal, prim, reverseDelete } from './algorithm'
 import { Edge } from '@/types'
-import AlgorithmSelect from './algorithm-select'
+import AlgorithmSelect from '../../components/algorithm-select'
 
 export default function MinimumSpaningTreeVisualization() {
   const [totalNodes, setTotalNodes] = useState(10)
