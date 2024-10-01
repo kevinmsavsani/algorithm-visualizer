@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import aStar from './algorithms/a-star'
+import bfs from './algorithms/bfs'
 
 interface Node {
   row: number
@@ -146,10 +147,13 @@ export default function PathfindingVisualizer() {
 
     switch (method) {
       case 'dijkstra':
-        output = dijkstra(clonedGrid, start, end)
+        output = dijkstra(clonedGrid)
         break
       case 'aStar':
-        output = aStar(clonedGrid, start, end)
+        output = aStar(clonedGrid)
+        break
+      case 'bfs':
+        output = bfs(clonedGrid)
         break
       // Add more cases for other algorithms
       default:
@@ -322,10 +326,11 @@ export default function PathfindingVisualizer() {
             >
               dijkstra
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleAlgorithmSelection('aStar')}
-            >
+            <DropdownMenuItem onClick={() => handleAlgorithmSelection('aStar')}>
               aStar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleAlgorithmSelection('bfs')}>
+              bfs
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

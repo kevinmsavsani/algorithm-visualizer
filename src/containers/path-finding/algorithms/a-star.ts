@@ -86,20 +86,4 @@ const getEndNode = (grid: Node[][]): Node => {
   throw new Error('End node not found');
 };
 
-// New function to get the shortest path
-const getShortestPath = (visitedNodesInOrder: Node[]): Node[] => {
-  const lastNode = visitedNodesInOrder[visitedNodesInOrder.length - 1];
-  return reconstructPath(lastNode);
-};
-
-const reconstructPath = (endNode: Node): Node[] => {
-  const path: Node[] = [];
-  let currentNode: Node | null = endNode;
-  while (currentNode !== null) {
-    path.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-  return path;
-};
-
 export default aStar;
