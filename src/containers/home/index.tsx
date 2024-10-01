@@ -24,7 +24,13 @@ const NetworkBackground = () => (
 const AlgorithmIcon = ({
   type,
 }: {
-  type: 'sorting' | 'path-finding' | 'convex-hull' | 'graph' | 'graph-search'
+  type:
+    | 'sorting'
+    | 'path-finding'
+    | 'convex-hull'
+    | 'graph'
+    | 'graph-search'
+    | 'minimum-spanning-tree'
 }) => {
   const iconSize = 'w-40 h-40' // Updated icon size for better aspect ratio
 
@@ -69,6 +75,7 @@ const AlgorithmIcon = ({
       )
     case 'graph-search':
     case 'graph':
+    case 'minimum-spanning-tree':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -121,6 +128,7 @@ export default function Home() {
             'convex-hull',
             'graph',
             'graph-search',
+            'minimum-spanning-tree',
           ].map((type) => (
             <Link to={`/${type}`} key={type}>
               <CardContainer className="inter-var">
@@ -139,10 +147,10 @@ export default function Home() {
                           | 'convex-hull'
                           | 'graph'
                           | 'graph-search'
+                          | 'minimum-spanning-tree'
                       }
                     />
                   </CardItem>
-
                   <CardItem className="mt-2 text-xl font-semibold capitalize">
                     {type}
                   </CardItem>

@@ -11,6 +11,7 @@ import PathfindingVisualizer from './containers/path-finding'
 import ConvexHullVisualizer from './containers/convex-hull'
 import GraphVisualization from './containers/graph'
 import GraphSearchVisualization from './containers/graph-search'
+import MinimumSpaningTreeVisualization from './containers/minimum-spanning-tree'
 
 const App = () => {
   const router = createBrowserRouter(
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/convex-hull" element={<ConvexHullVisualizer />} />
         <Route path="/graph" element={<GraphVisualization />} />
         <Route path="/graph-search" element={<GraphSearchVisualization />} />
+        <Route path="/minimum-spanning-tree" element={<MinimumSpaningTreeVisualization />} />
       </Route>,
     ),
   )
