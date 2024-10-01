@@ -104,7 +104,7 @@ const Graph: React.FC<GraphProps> = ({
         width="100%"
         height="auto"
         viewBox={`0 0 ${COL_SIZE * CELL_SIZE} ${ROW_SIZE * CELL_SIZE}`}
-        className="border border-gray-300 dark:border-gray-700 w-full sm:w-3/5 lg:w-1/2"
+        className="border border-gray-300 dark:border-gray-700 w-full sm:w-4/5 lg:w-3/4"
       >
         <g>
           {/* Grid */}
