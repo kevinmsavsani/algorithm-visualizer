@@ -13,7 +13,6 @@ import {
   RotateCcw,
   ListRestart,
 } from 'lucide-react'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   getNodeClassName,
   getNodesInShortestPathOrder,
@@ -22,6 +21,13 @@ import {
 import { cloneDeep } from 'lodash'
 import dijkstra from './algorithms/dijkstra'
 import TabsComponent from './tabs'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import aStar from './algorithms/a-star'
 
 interface Node {
   row: number
@@ -39,6 +45,7 @@ const GRID_ROWS = 20
 const GRID_COLS = 30
 
 export default function PathfindingVisualizer() {
+  const [method, setMethod] = useState('dijkstra')
   const [grid, setGrid] = useState<Node[][]>([])
   const [mouseIsPressed, setMouseIsPressed] = useState(false)
   const [startNode, setStartNode] = useState<{ row: number; col: number }>({
@@ -110,9 +117,11 @@ export default function PathfindingVisualizer() {
     } else if (currentTool === 'start') {
       grid[startNode.row][startNode.col].isStart = false
       setStartNode({ row, col })
+      grid[row][col].isStart = true
     } else if (currentTool === 'end') {
       grid[endNode.row][endNode.col].isEnd = false
       setEndNode({ row, col })
+      grid[row][col].isEnd = true
     }
     setMouseIsPressed(true)
   }
@@ -129,11 +138,31 @@ export default function PathfindingVisualizer() {
     setMouseIsPressed(false)
   }
 
-  const generateSteps = () => {
-    if (isVisualized) return
+  const runAlgorithm = () => {
+    let output
     const start = grid[startNode.row][startNode.col]
     const end = grid[endNode.row][endNode.col]
-    const output = dijkstra(cloneDeep(grid), start, end)
+    const clonedGrid = cloneDeep(grid)
+
+    switch (method) {
+      case 'dijkstra':
+        output = dijkstra(clonedGrid, start, end)
+        break
+      case 'aStar':
+        output = aStar(clonedGrid, start, end)
+        break
+      // Add more cases for other algorithms
+      default:
+        console.error('Unknown algorithm selected')
+        return
+    }
+
+    return output
+  }
+
+  const generateSteps = () => {
+    if (isVisualized) return
+    const output = runAlgorithm()
     const shortestPath = getNodesInShortestPathOrder(output[output.length - 1])
     setVisitedNodesInOrder(output)
     setNodesInShortestPath(shortestPath)
@@ -275,9 +304,31 @@ export default function PathfindingVisualizer() {
     }
   }
 
+  const handleAlgorithmSelection = (algorithm: string) => {
+    setMethod(algorithm)
+    handleReset()
+  }
+
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex w-full justify-between items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">{method}</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => handleAlgorithmSelection('dijkstra')}
+            >
+              dijkstra
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleAlgorithmSelection('aStar')}
+            >
+              aStar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <TabsComponent setCurrentTool={setCurrentTool} />
         <Button
           onClick={generateSteps}
