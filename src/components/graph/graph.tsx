@@ -81,7 +81,7 @@ const Graph: React.FC<GraphProps> = ({
         edge.source === currentEdge.source &&
         edge.target === currentEdge.target
       ) {
-        return 'stroke-blue dark:stroke-blue-300'
+        return 'stroke-blue-300 dark:stroke-green-300'
       }
     }
     if (currentStep === result.length - 1) {
@@ -92,7 +92,7 @@ const Graph: React.FC<GraphProps> = ({
             (e.source === edge.target && e.target === edge.source),
         )
       ) {
-        return 'stroke-green dark:stroke-green-300'
+        return 'stroke-green-300 dark:stroke-green-300'
       }
     }
     return 'stroke-black dark:stroke-gray-400'
@@ -147,13 +147,12 @@ const Graph: React.FC<GraphProps> = ({
                     x2={targetNode.x + CELL_SIZE / 2}
                     y2={targetNode.y + CELL_SIZE / 2}
                     strokeWidth="2"
-                    className={cn(`${getEdgeColor(edge)}`)}
+                    className={`${getEdgeColor(edge)}`}
                   />
                   <circle
                     cx={midX}
                     cy={midY}
                     r="8"
-                    stroke={getEdgeColor(edge)}
                     strokeWidth="1"
                     className="fill-gray-800 dark:fill-yellow-500"
                   />
@@ -248,20 +247,36 @@ const Graph: React.FC<GraphProps> = ({
       </svg>
       {isAllowClick && (
         <div className="mt-4 text-center">
-          <div className="mb-2">
+          <div className="mb-2 text-black dark:text-white">
             Traversal Order:{' '}
-            {result
-              .map((edge) => `${edge.source} -> ${edge.target}`)
-              .join(' -> ')}
+            <span className="text-blue-600 dark:text-blue-300">
+              {result
+                .map((edge) => `${edge.source} -> ${edge.target}`)
+                .join(' -> ')}
+            </span>
           </div>
-          <div>
-            Current Step: {currentStep >= 0 ? currentStep + 1 : 0} /{' '}
-            {result.length}
+          <div className="text-black dark:text-white">
+            Current Step:{' '}
+            <span className="text-blue-600 dark:text-blue-300">
+              {currentStep >= 0 ? currentStep + 1 : 0}
+            </span>{' '}
+            /{' '}
+            <span className="text-blue-600 dark:text-blue-300">
+              {result.length}
+            </span>
           </div>
-          <div>
-            Start Node: {startNode !== null ? startNode : 'Not selected'}
+          <div className="text-black dark:text-white">
+            Start Node:{' '}
+            <span className="text-blue-600 dark:text-blue-300">
+              {startNode !== null ? startNode : 'Not selected'}
+            </span>
           </div>
-          <div>End Node: {endNode !== null ? endNode : 'Not selected'}</div>
+          <div className="text-black dark:text-white">
+            End Node:{' '}
+            <span className="text-blue-600 dark:text-blue-300">
+              {endNode !== null ? endNode : 'Not selected'}
+            </span>
+          </div>
         </div>
       )}
     </>
