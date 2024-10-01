@@ -35,23 +35,23 @@ export default function MinimumSpaningTreeVisualization() {
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
-    switch (algorithm) {  
+    switch (algorithm) {
       case 'kruskal':
         setResult(kruskal(graph))
         break
-      case 'prim':  
+      case 'prim':
         setResult(prim(graph))
-        break 
+        break
       case 'boruvka':
         setResult(boruvka(graph))
         break
-      case 'reverse-delete':  
+      case 'reverse-delete':
         setResult(reverseDelete(graph))
         break
       default:
         break
     }
-  }, [graph])
+  }, [graph, algorithm])
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
@@ -75,6 +75,7 @@ export default function MinimumSpaningTreeVisualization() {
         setAnimationSpeed={setAnimationSpeed}
         selectionMode={selectionMode}
         setSelectionMode={setSelectionMode}
+        nodeSelectShow={false}
       />
       <Graph graph={graph} result={result} currentStep={currentStep} />
     </div>

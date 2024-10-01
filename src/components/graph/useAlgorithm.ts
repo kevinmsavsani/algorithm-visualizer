@@ -133,6 +133,7 @@ export function useAlgorithm(totalNodes: number, resultSize: number) {
   }, [isAnimating, currentStep, resultSize, animationSpeed])
 
   return {
+    setGraph,
     graph,
     currentStep,
     isAnimating,

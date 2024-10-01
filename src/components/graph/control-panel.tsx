@@ -18,6 +18,7 @@ interface ControlPanelProps {
   setAnimationSpeed: (value: number) => void
   selectionMode: 'start' | 'end' | null
   setSelectionMode: (mode: 'start' | 'end') => void
+  nodeSelectShow: boolean
 }
 
 export function ControlPanel({
@@ -34,6 +35,7 @@ export function ControlPanel({
   setAnimationSpeed,
   selectionMode,
   setSelectionMode,
+  nodeSelectShow = true,
 }: ControlPanelProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
@@ -44,18 +46,22 @@ export function ControlPanel({
         value={totalNodes}
         onChange={(e) => setTotalNodes(Number(e.target.value))}
       />
-      <Button
-        onClick={() => setSelectionMode('start')}
-        disabled={selectionMode === 'start'}
-      >
-        Select Start Node
-      </Button>
-      <Button
-        onClick={() => setSelectionMode('end')}
-        disabled={selectionMode === 'end'}
-      >
-        Select End Node
-      </Button>
+      {nodeSelectShow && (
+        <>
+          <Button
+            onClick={() => setSelectionMode('start')}
+            disabled={selectionMode === 'start'}
+          >
+            Select Start Node
+          </Button>
+          <Button
+            onClick={() => setSelectionMode('end')}
+            disabled={selectionMode === 'end'}
+          >
+            Select End Node
+          </Button>
+        </>
+      )}
       <Button onClick={toggleAnimation}>
         {isAnimating ? (
           <PauseIcon className="mr-2 h-4 w-4" />
