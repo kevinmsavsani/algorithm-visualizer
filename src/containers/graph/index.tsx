@@ -244,7 +244,7 @@ const GraphVisualization: React.FC = () => {
   }, [isAnimating, currentStep, traversalOrder.length, animationSpeed])
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-4">
+    <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
         <Button onClick={generateRandomGraph}>Generate Random Graph</Button>
         <Button onClick={generateRandomTree}>Generate Random Tree</Button>
@@ -252,13 +252,12 @@ const GraphVisualization: React.FC = () => {
           type="number"
           value={totalNodes}
           onChange={(e) => setTotalNodes(Number(e.target.value))}
-          className=""
         />
         <Select value={algorithm} onValueChange={setAlgorithm}>
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Select algorithm" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent >
             <SelectItem value="bfs">Breadth-First Search</SelectItem>
             <SelectItem value="dfs">Depth-First Search</SelectItem>
           </SelectContent>
@@ -267,7 +266,9 @@ const GraphVisualization: React.FC = () => {
           Generate Steps
         </Button>
         <div className="flex items-center space-x-2 col-span-1 md:col-span-2">
-          <Label htmlFor="speed">Animation Speed:</Label>
+          <Label htmlFor="speed">
+            Animation Speed:
+          </Label>
           <Slider
             id="speed"
             min={100}
@@ -303,10 +304,11 @@ const GraphVisualization: React.FC = () => {
         </Button>
       </div>
       <svg
-        width={GRID_SIZE * CELL_SIZE}
-        height={GRID_SIZE * CELL_SIZE}
-        className="border border-gray-300"
-      >
+        width="100%"
+        height="auto"
+        viewBox={`0 0 ${GRID_SIZE * CELL_SIZE} ${GRID_SIZE * CELL_SIZE}`}
+        className="border border-gray-300 dark:border-gray-700 w-full sm:w-3/5 lg:w-1/2"
+        >
         <g>
           {/* Grid */}
           {Array.from({ length: GRID_SIZE }).map((_, i) => (
@@ -318,6 +320,7 @@ const GraphVisualization: React.FC = () => {
                 y2={i * CELL_SIZE}
                 stroke="lightgray"
                 strokeWidth="1"
+                className="dark:stroke-gray-600"
               />
               <line
                 x1={i * CELL_SIZE}
@@ -326,6 +329,7 @@ const GraphVisualization: React.FC = () => {
                 y2={GRID_SIZE * CELL_SIZE}
                 stroke="lightgray"
                 strokeWidth="1"
+                className="dark:stroke-gray-600"
               />
             </React.Fragment>
           ))}
@@ -343,6 +347,7 @@ const GraphVisualization: React.FC = () => {
                   y2={targetNode.y + CELL_SIZE / 2}
                   stroke="black"
                   strokeWidth="2"
+                  className="dark:stroke-white"
                 />
               )
             }
@@ -377,6 +382,7 @@ const GraphVisualization: React.FC = () => {
                     textAnchor="middle"
                     dy=".3em"
                     fontSize="12"
+                    className="dark:text-black"
                   >
                     {node.id}
                   </text>
@@ -403,10 +409,13 @@ const GraphVisualization: React.FC = () => {
           )}
         </g>
       </svg>
-      <div>Traversal Order: {traversalOrder.join(' -> ')}</div>
-      <div>
-        Current Step: {currentStep >= 0 ? currentStep + 1 : 0} /{' '}
-        {traversalOrder.length}
+      <div className="mt-4 text-center">
+        <div className="mb-2">
+          Traversal Order: {traversalOrder.join(' -> ')}
+        </div>
+        <div>
+          Current Step: {currentStep >= 0 ? currentStep + 1 : 0} / {traversalOrder.length}
+        </div>
       </div>
     </div>
   )
