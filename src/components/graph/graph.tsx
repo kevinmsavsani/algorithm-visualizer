@@ -5,18 +5,27 @@ import { Edge, GraphProps } from '@/types'
 
 export function Graph({ graph, result, currentStep }: GraphProps) {
   const getEdgeColor = (edge: Edge) => {
-    if (
-      result
-        .slice(0, currentStep + 1)
-        .some(
+    if (currentStep >= 0 && currentStep < result.length - 1) {
+      const currentEdge = result[currentStep]
+      if (
+        edge.source === currentEdge.source &&
+        edge.target === currentEdge.target
+      ) {
+        return 'stroke-blue dark:stroke-blue-300'
+      }
+    }
+    if (currentStep === result.length - 1) {
+      if (
+        result.some(
           (e) =>
             (e.source === edge.source && e.target === edge.target) ||
             (e.source === edge.target && e.target === edge.source),
         )
-    ) {
-      return 'stroke-blue-500 dark:stroke-blue-300'
+      ) {
+        return 'stroke-green dark:stroke-green-300'
+      }
     }
-    return 'stroke-gray-300 dark:stroke-gray-600'
+    return 'stroke-black dark:stroke-gray-400'
   }
 
   return (
