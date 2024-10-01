@@ -1,13 +1,19 @@
-"use client"
+'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { motion, AnimatePresence } from "framer-motion"
-import { PlayIcon, PauseIcon } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { motion, AnimatePresence } from 'framer-motion'
+import { PlayIcon, PauseIcon } from 'lucide-react'
 
 interface Node {
   id: number
@@ -30,7 +36,7 @@ const CELL_SIZE = 60
 
 const GraphVisualization: React.FC = () => {
   const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] })
-  const [algorithm, setAlgorithm] = useState<string>("bfs")
+  const [algorithm, setAlgorithm] = useState<string>('bfs')
   const [traversalOrder, setTraversalOrder] = useState<number[]>([])
   const [currentStep, setCurrentStep] = useState<number>(-1)
   const [isAnimating, setIsAnimating] = useState<boolean>(false)
@@ -44,7 +50,7 @@ const GraphVisualization: React.FC = () => {
     const nodes: Node[] = Array.from({ length: totalNodes }, (_, i) => ({
       id: i,
       x: Math.floor(Math.random() * GRID_SIZE) * CELL_SIZE,
-      y: Math.floor(Math.random() * GRID_SIZE) * CELL_SIZE
+      y: Math.floor(Math.random() * GRID_SIZE) * CELL_SIZE,
     }))
 
     const edges: Edge[] = []
@@ -67,7 +73,7 @@ const GraphVisualization: React.FC = () => {
     const nodes: Node[] = Array.from({ length: totalNodes }, (_, i) => ({
       id: i,
       x: 0,
-      y: 0
+      y: 0,
     }))
 
     const edges: Edge[] = []
@@ -77,12 +83,19 @@ const GraphVisualization: React.FC = () => {
     }
 
     const root = 0
-    const assignCoordinates = (nodeId: number, depth: number, leftBound: number, rightBound: number) => {
+    const assignCoordinates = (
+      nodeId: number,
+      depth: number,
+      leftBound: number,
+      rightBound: number,
+    ) => {
       const node = nodes[nodeId]
       node.x = Math.floor((leftBound + rightBound) / 2) * CELL_SIZE
       node.y = depth * CELL_SIZE
 
-      const children = edges.filter(e => e.source === nodeId).map(e => e.target)
+      const children = edges
+        .filter((e) => e.source === nodeId)
+        .map((e) => e.target)
       const width = (rightBound - leftBound) / children.length
       children.forEach((childId, i) => {
         const childLeftBound = leftBound + i * width
@@ -108,8 +121,8 @@ const GraphVisualization: React.FC = () => {
         visited.add(node)
         order.push(node)
         graph.edges
-          .filter(e => e.source === node || e.target === node)
-          .forEach(e => {
+          .filter((e) => e.source === node || e.target === node)
+          .forEach((e) => {
             const neighbor = e.source === node ? e.target : e.source
             if (!visited.has(neighbor)) {
               queue.push(neighbor)
@@ -129,8 +142,8 @@ const GraphVisualization: React.FC = () => {
       visited.add(node)
       order.push(node)
       graph.edges
-        .filter(e => e.source === node || e.target === node)
-        .forEach(e => {
+        .filter((e) => e.source === node || e.target === node)
+        .forEach((e) => {
           const neighbor = e.source === node ? e.target : e.source
           if (!visited.has(neighbor)) {
             dfsRecursive(neighbor)
@@ -144,7 +157,7 @@ const GraphVisualization: React.FC = () => {
 
   const generateSteps = () => {
     const startNode = graph.nodes[0]?.id ?? 0
-    const order = algorithm === "bfs" ? bfs(startNode) : dfs(startNode)
+    const order = algorithm === 'bfs' ? bfs(startNode) : dfs(startNode)
     setTraversalOrder(order)
     setCurrentStep(-1)
     setStepsGenerated(true)
@@ -188,22 +201,27 @@ const GraphVisualization: React.FC = () => {
   }
 
   const handleGridClick = (x: number, y: number) => {
-    const existingNode = graph.nodes.find(node => node.x === x && node.y === y)
+    const existingNode = graph.nodes.find(
+      (node) => node.x === x && node.y === y,
+    )
     if (existingNode) {
       if (selectedNode === null) {
         setSelectedNode(existingNode.id)
       } else {
-        setGraph(prevGraph => ({
+        setGraph((prevGraph) => ({
           ...prevGraph,
-          edges: [...prevGraph.edges, { source: selectedNode, target: existingNode.id }]
+          edges: [
+            ...prevGraph.edges,
+            { source: selectedNode, target: existingNode.id },
+          ],
         }))
         setSelectedNode(null)
       }
     } else {
       const newNode: Node = { id: graph.nodes.length, x, y }
-      setGraph(prevGraph => ({
+      setGraph((prevGraph) => ({
         ...prevGraph,
-        nodes: [...prevGraph.nodes, newNode]
+        nodes: [...prevGraph.nodes, newNode],
       }))
     }
     resetVisualization()
@@ -212,7 +230,7 @@ const GraphVisualization: React.FC = () => {
   useEffect(() => {
     if (isAnimating && currentStep < traversalOrder.length - 1) {
       animationRef.current = setTimeout(() => {
-        setCurrentStep(step => step + 1)
+        setCurrentStep((step) => step + 1)
       }, animationSpeed)
     } else if (currentStep >= traversalOrder.length - 1) {
       setIsAnimating(false)
@@ -227,20 +245,17 @@ const GraphVisualization: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4">
-      <div className="flex space-x-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
         <Button onClick={generateRandomGraph}>Generate Random Graph</Button>
         <Button onClick={generateRandomTree}>Generate Random Tree</Button>
         <Input
           type="number"
           value={totalNodes}
           onChange={(e) => setTotalNodes(Number(e.target.value))}
-          className="w-20"
+          className=""
         />
-      </div>
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="algorithm">Algorithm:</Label>
         <Select value={algorithm} onValueChange={setAlgorithm}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Select algorithm" />
           </SelectTrigger>
           <SelectContent>
@@ -248,31 +263,50 @@ const GraphVisualization: React.FC = () => {
             <SelectItem value="dfs">Depth-First Search</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="speed">Animation Speed:</Label>
-        <Slider
-          id="speed"
-          min={100}
-          max={2000}
-          step={100}
-          value={[animationSpeed]}
-          onValueChange={(value) => setAnimationSpeed(value[0])}
-          className="w-[200px]"
-        />
-        <span>{animationSpeed}ms</span>
-      </div>
-      <div className="flex space-x-2">
-        <Button onClick={generateSteps} disabled={graph.nodes.length === 0}>Generate Steps</Button>
+        <Button onClick={generateSteps} disabled={graph.nodes.length === 0}>
+          Generate Steps
+        </Button>
+        <div className="flex items-center space-x-2 col-span-1 md:col-span-2">
+          <Label htmlFor="speed">Animation Speed:</Label>
+          <Slider
+            id="speed"
+            min={100}
+            max={2000}
+            step={100}
+            value={[animationSpeed]}
+            onValueChange={(value) => setAnimationSpeed(value[0])}
+            className="w-full md:w-[200px]"
+          />
+          <span>{animationSpeed}ms</span>
+        </div>
+
         <Button onClick={toggleAnimation} disabled={!stepsGenerated}>
-          {isAnimating ? <PauseIcon className="mr-2 h-4 w-4" /> : <PlayIcon className="mr-2 h-4 w-4" />}
-          {isAnimating ? "Pause" : "Start"}
+          {isAnimating ? (
+            <PauseIcon className="mr-2 h-4 w-4" />
+          ) : (
+            <PlayIcon className="mr-2 h-4 w-4" />
+          )}
+          {isAnimating ? 'Pause' : 'Start'}
         </Button>
         <Button onClick={resetVisualization}>Reset</Button>
-        <Button onClick={stepBackward} disabled={!stepsGenerated || currentStep <= 0}>Step Back</Button>
-        <Button onClick={stepForward} disabled={!stepsGenerated || currentStep >= traversalOrder.length - 1}>Step Forward</Button>
+        <Button
+          onClick={stepBackward}
+          disabled={!stepsGenerated || currentStep <= 0}
+        >
+          Step Back
+        </Button>
+        <Button
+          onClick={stepForward}
+          disabled={!stepsGenerated || currentStep >= traversalOrder.length - 1}
+        >
+          Step Forward
+        </Button>
       </div>
-      <svg width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE} className="border border-gray-300">
+      <svg
+        width={GRID_SIZE * CELL_SIZE}
+        height={GRID_SIZE * CELL_SIZE}
+        className="border border-gray-300"
+      >
         <g>
           {/* Grid */}
           {Array.from({ length: GRID_SIZE }).map((_, i) => (
@@ -297,8 +331,8 @@ const GraphVisualization: React.FC = () => {
           ))}
           {/* Edges */}
           {graph.edges.map((edge, index) => {
-            const sourceNode = graph.nodes.find(n => n.id === edge.source)
-            const targetNode = graph.nodes.find(n => n.id === edge.target)
+            const sourceNode = graph.nodes.find((n) => n.id === edge.source)
+            const targetNode = graph.nodes.find((n) => n.id === edge.target)
             if (sourceNode && targetNode) {
               return (
                 <line
@@ -317,8 +351,11 @@ const GraphVisualization: React.FC = () => {
           {/* Nodes */}
           <AnimatePresence>
             {graph.nodes.map((node) => {
-              const isVisited = traversalOrder.slice(0, currentStep + 1).includes(node.id)
-              const isCurrent = currentStep >= 0 && traversalOrder[currentStep] === node.id
+              const isVisited = traversalOrder
+                .slice(0, currentStep + 1)
+                .includes(node.id)
+              const isCurrent =
+                currentStep >= 0 && traversalOrder[currentStep] === node.id
               return (
                 <motion.g
                   key={`node-${node.id}`}
@@ -330,7 +367,7 @@ const GraphVisualization: React.FC = () => {
                     cx={node.x + CELL_SIZE / 2}
                     cy={node.y + CELL_SIZE / 2}
                     r={CELL_SIZE / 3}
-                    fill={isCurrent ? "red" : isVisited ? "lightblue" : "white"}
+                    fill={isCurrent ? 'red' : isVisited ? 'lightblue' : 'white'}
                     stroke="black"
                     strokeWidth="2"
                   />
@@ -357,18 +394,19 @@ const GraphVisualization: React.FC = () => {
                 width={CELL_SIZE}
                 height={CELL_SIZE}
                 fill="transparent"
-                onClick={() => handleGridClick(col * CELL_SIZE, row * CELL_SIZE)}
+                onClick={() =>
+                  handleGridClick(col * CELL_SIZE, row * CELL_SIZE)
+                }
                 style={{ cursor: 'pointer' }}
               />
-            ))
+            )),
           )}
         </g>
       </svg>
+      <div>Traversal Order: {traversalOrder.join(' -> ')}</div>
       <div>
-        Traversal Order: {traversalOrder.join(' -> ')}
-      </div>
-      <div>
-        Current Step: {currentStep >= 0 ? currentStep + 1 : 0} / {traversalOrder.length}
+        Current Step: {currentStep >= 0 ? currentStep + 1 : 0} /{' '}
+        {traversalOrder.length}
       </div>
     </div>
   )
