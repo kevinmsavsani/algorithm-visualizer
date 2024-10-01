@@ -21,19 +21,13 @@ const NetworkBackground = () => (
   </div>
 )
 
-const AlgorithmIcon = ({
-  type,
-}: {
-  type: 'sorting' | 'path-finding' | 'convex-hull'
-}) => {
+const AlgorithmIcon = ({ type }: { type: 'sorting' | 'path-finding' | 'convex-hull' }) => {
+  const iconSize = "w-40 h-40"; // Updated icon size for better aspect ratio
+
   switch (type) {
     case 'sorting':
       return (
-        <svg
-          className="w-64 h-64 text-green-400"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
+        <svg className={`${iconSize} text-green-400`} viewBox="0 0 24 24" fill="currentColor">
           <rect x="3" y="14" width="4" height="10" />
           <rect x="9" y="9" width="4" height="15" />
           <rect x="15" y="4" width="4" height="20" />
@@ -42,12 +36,7 @@ const AlgorithmIcon = ({
       )
     case 'path-finding':
       return (
-        <svg
-          className="w-64 h-64 text-green-400"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
+        <svg className={`${iconSize} text-green-400`} viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <circle cx="4" cy="4" r="3" />
           <circle cx="12" cy="12" r="3" />
           <circle cx="20" cy="4" r="3" />
@@ -57,11 +46,7 @@ const AlgorithmIcon = ({
       )
     case 'convex-hull':
       return (
-        <svg
-          className="w-64 h-64 text-green-400"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
+        <svg className={`${iconSize} text-green-400`} viewBox="0 0 24 24" fill="currentColor">
           <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
         </svg>
       )
@@ -70,43 +55,39 @@ const AlgorithmIcon = ({
 
 export default function Home() {
   return (
-    <div
-      className={`relative min-h-screen dark:bg-gray-900 dakr:text-white flex flex-col items-center justify-center overflow-hidden`}
-    >
+    <div className={`relative min-h-screen bg-white dark:bg-gray-900 dark:text-white flex flex-col items-center justify-center overflow-hidden`}>
       <NetworkBackground />
-      <main className="z-10 text-center">
+      <main className="z-10 text-center p-4 md:p-8">
         <div className="mb-8">
           <svg
-            className="w-16 h-16 mx-auto mb-4 text-green-400"
+            className="w-10 h-10 mx-auto mb-4 text-green-400"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
             <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
           </svg>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
             ALGORITHM <span className="text-green-400">VISUALIZER</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto">
             Algorithm Visualizer is an interactive online platform that
-            visualizes algorithms from code. Currently these include Sorting,
-            Pathfind and ConvexHull Algorithms. More Algorithms will be coming
-            soon!!
+            visualizes algorithms from code. Currently, these include Sorting,
+            Pathfinding, and Convex Hull Algorithms. More algorithms will be coming
+            soon!
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-8">
           {['sorting', 'path-finding', 'convex-hull'].map((type) => (
             <Link to={`/${type}`} key={type}>
               <CardContainer className="inter-var">
-                <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border flex flex-col items-center justify-center ">
+                <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-[300px] h-[350px] rounded-xl p-6 border flex flex-col items-center justify-center transition-all duration-300 ease-in-out transform hover:scale-105">
                   <CardItem
                     translateZ="100"
                     rotateX={20}
                     rotateZ={-10}
                     className="mt-4"
                   >
-                    <AlgorithmIcon
-                      type={type as 'sorting' | 'path-finding' | 'convex-hull'}
-                    />
+                    <AlgorithmIcon type={type as 'sorting' | 'path-finding' | 'convex-hull'} />
                   </CardItem>
 
                   <CardItem className="mt-2 text-xl font-semibold capitalize">
