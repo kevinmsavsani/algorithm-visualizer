@@ -10,6 +10,7 @@ import Sorting from './containers/sorting'
 import PathfindingVisualizer from './containers/path-finding'
 import ConvexHullVisualizer from './containers/convex-hull'
 import GraphVisualization from './containers/graph'
+import GraphSearchVisualization from './containers/graph-search'
 
 const App = () => {
   const router = createBrowserRouter(
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/path-finding" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull" element={<ConvexHullVisualizer />} />
         <Route path="/graph" element={<GraphVisualization />} />
+        <Route path="/graph-search" element={<GraphSearchVisualization />} />
       </Route>,
     ),
   )

@@ -24,6 +24,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.9.0",
+    "js-priority-queue": "^0.1.5",
     "lodash": "^4.17.21",
     "lucide-react": "^0.446.0",
     "path": "^0.12.7",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@types/js-priority-queue": "^0.0.9",
     "@types/lodash": "^4.17.9",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",

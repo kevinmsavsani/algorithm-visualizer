@@ -24,7 +24,7 @@ const NetworkBackground = () => (
 const AlgorithmIcon = ({
   type,
 }: {
-  type: 'sorting' | 'path-finding' | 'convex-hull' | 'graph'
+  type: 'sorting' | 'path-finding' | 'convex-hull' | 'graph' | 'graph-search'
 }) => {
   const iconSize = 'w-40 h-40' // Updated icon size for better aspect ratio
 
@@ -67,6 +67,7 @@ const AlgorithmIcon = ({
           <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
         </svg>
       )
+    case 'graph-search':
     case 'graph':
       return (
         <svg
@@ -114,7 +115,13 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-8">
-          {['sorting', 'path-finding', 'convex-hull', 'graph'].map((type) => (
+          {[
+            'sorting',
+            'path-finding',
+            'convex-hull',
+            'graph',
+            'graph-search',
+          ].map((type) => (
             <Link to={`/${type}`} key={type}>
               <CardContainer className="inter-var">
                 <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-[300px] h-[350px] rounded-xl p-6 border flex flex-col items-center justify-center transition-all duration-300 ease-in-out transform hover:scale-105">
@@ -131,6 +138,7 @@ export default function Home() {
                           | 'path-finding'
                           | 'convex-hull'
                           | 'graph'
+                          | 'graph-search'
                       }
                     />
                   </CardItem>
