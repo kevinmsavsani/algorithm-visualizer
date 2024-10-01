@@ -18,7 +18,7 @@ interface ControlPanelProps {
   setAnimationSpeed: (value: number) => void
   selectionMode: 'start' | 'end' | null
   setSelectionMode: (mode: 'start' | 'end') => void
-  nodeSelectShow: boolean
+  nodeSelectShow?: boolean
 }
 
 export function ControlPanel({

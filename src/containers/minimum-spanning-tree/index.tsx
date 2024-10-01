@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { ControlPanel } from '../../components/graph/control-panel'
-import { Graph } from '../../components/graph/graph'
+import Graph from '../../components/graph/graph'
 import { useAlgorithm } from '../../components/graph/useAlgorithm'
 import { boruvka, kruskal, prim, reverseDelete } from './algorithm'
 import { Edge } from '@/types'
@@ -77,7 +77,12 @@ export default function MinimumSpaningTreeVisualization() {
         setSelectionMode={setSelectionMode}
         nodeSelectShow={false}
       />
-      <Graph graph={graph} result={result} currentStep={currentStep} />
+      <Graph
+        graph={graph}
+        result={result}
+        currentStep={currentStep}
+        isAllowClick={false}
+      />
     </div>
   )
 }

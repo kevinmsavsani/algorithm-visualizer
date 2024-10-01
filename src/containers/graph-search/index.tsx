@@ -12,8 +12,8 @@ import {
   dijkstra,
   floydWarshall,
 } from './algorithm'
-import NewGraph from './new-graph'
 import { Edge } from '@/types'
+import Graph from '@/components/graph/graph'
 
 export default function GraphSearchVisualization() {
   const [totalNodes, setTotalNodes] = useState(10)
@@ -68,7 +68,7 @@ export default function GraphSearchVisualization() {
       }
     }
     setResult(setNewResults())
-  }, [graph,startNode, endNode, algorithm])
+  }, [graph, startNode, endNode, algorithm])
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
@@ -92,7 +92,7 @@ export default function GraphSearchVisualization() {
         selectionMode={selectionMode}
         setSelectionMode={setSelectionMode}
       />
-      <NewGraph
+      <Graph
         graph={graph}
         result={result}
         isAllowClick
@@ -107,7 +107,7 @@ export default function GraphSearchVisualization() {
         endNode={endNode}
         setGraph={setGraph}
         resetVisualization={resetVisualization}
-       />
+      />
     </div>
   )
 }
