@@ -61,15 +61,6 @@ const config: AlgorithmConfig[] = [
     ],
   },
   {
-    name: 'Graph',
-    path: '/graph',
-    value: 'graph',
-    algorithms: [
-      { name: 'Adjacency List', path: '/graph/adjacency-list' },
-      { name: 'Adjacency Matrix', path: '/graph/adjacency-matrix' },
-    ],
-  },
-  {
     name: 'Graph Search',
     path: '/graph-search',
     value: 'graph-search',
