@@ -3,34 +3,23 @@
 import { useEffect, useState } from 'react'
 import { ControlPanel } from '../../components/graph/control-panel'
 import { useAlgorithm } from '../../components/graph/useAlgorithm'
-import AlgorithmSelect, { Option } from '../../components/algorithm-select'
-import {
-  aStar,
-  bellmanFord,
-  bfs,
-  dfs,
-  dijkstra,
-  floydWarshall,
-} from './algorithm'
 import { Edge } from '@/types'
 import Graph from '@/components/graph/graph'
+import { useParams } from 'react-router-dom'
+import config from '@/lib/config'
 
 export default function GraphSearchVisualization() {
+  const { algorithm } = useParams<{ algorithm: string; topic: string }>()
   const [totalNodes, setTotalNodes] = useState(10)
   const [result, setResult] = useState<Edge[]>([])
   const [selectedNode, setSelectedNode] = useState<number | null>(null)
   const [startNode, setStartNode] = useState<number | null>(null)
   const [endNode, setEndNode] = useState<number | null>(null)
 
-  const options = [
-    { value: 'bfs', label: 'BFS', method: bfs },
-    { value: 'dfs', label: 'DFS', method: dfs },
-    { value: 'dijkstra', label: 'Dijkstra', method: dijkstra },
-    { value: 'astar', label: 'A*', method: aStar },
-    { value: 'bellman-ford', label: 'Bellman-Ford', method: bellmanFord },
-    { value: 'floyd-warshall', label: 'Floyd-Warshall', method: floydWarshall },
-  ]
-  const [algorithm, setAlgorithm] = useState<Option>(options[0])
+  const algorithmOption = config
+    ?.find((option) => option.value === 'graph-search')
+    ?.algorithms.find((option) => option.value === algorithm)
+
   const {
     setGraph,
     graph,
@@ -49,16 +38,11 @@ export default function GraphSearchVisualization() {
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
-    setResult(algorithm.method(graph, startNode, endNode))
+    setResult(algorithmOption.method(graph, startNode, endNode))
   }, [graph, startNode, endNode, algorithm])
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
-      <AlgorithmSelect
-        value={algorithm}
-        onValueChange={setAlgorithm}
-        options={options}
-      />
       <ControlPanel
         totalNodes={totalNodes}
         animationSpeed={animationSpeed}

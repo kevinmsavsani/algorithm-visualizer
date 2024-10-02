@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/path-finding" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull" element={<ConvexHullVisualizer />} />
         <Route path="/graph" element={<GraphVisualization />} />
-        <Route path="/graph-search" element={<GraphSearchVisualization />} />
+        <Route path="/graph-search/:algorithm" element={<GraphSearchVisualization />} />
         <Route path="/minimum-spanning-tree/:algorithm" element={<MinimumSpaningTreeVisualization />} />
       </Route>,
     ),

@@ -1,10 +1,22 @@
-import { minimumSpaningTreeBoruvka, minimumSpaningTreeKruskal, minimumSpaningTreePrim, minimumSpaningTreeReverseDelete } from "./minimum-spanning-tree";
+import { graphSearchaStar, graphSearchBellmanFord, graphSearchBfs, graphSearchDfs, graphSearchDijkstra, graphSearchFloydWarshall } from './graph-search'
+import {
+  minimumSpaningTreeBoruvka,
+  minimumSpaningTreeKruskal,
+  minimumSpaningTreePrim,
+  minimumSpaningTreeReverseDelete,
+} from './minimum-spanning-tree'
 
 interface AlgorithmConfig {
-  name: string;
-  path: string;
-  value: string;
-  algorithms: Array<{ name: string; path: string; value?: string; label?: string; method?: Function }>;
+  name: string
+  path: string
+  value: string
+  algorithms: Array<{
+    name: string
+    path: string
+    value?: string
+    label?: string
+    method?: Function
+  }>
 }
 
 const config: AlgorithmConfig[] = [
@@ -53,8 +65,48 @@ const config: AlgorithmConfig[] = [
     path: '/graph-search',
     value: 'graph-search',
     algorithms: [
-      { name: 'Breadth-First Search', path: '/graph-search/bfs' },
-      { name: 'Depth-First Search', path: '/graph-search/dfs' },
+      {
+        name: 'Breadth-First Search (BFS)',
+        path: '/graph-search/bfs',
+        value: 'bfs',
+        label: 'BFS',
+        method: graphSearchBfs,
+      },
+      {
+        name: 'Depth-First Search (DFS)',
+        path: '/graph-search/dfs',
+        value: 'dfs',
+        label: 'DFS',
+        method: graphSearchDfs,
+      },
+      {
+        name: "Dijkstra's Algorithm",
+        path: '/graph-search/dijkstra',
+        value: 'dijkstra',
+        label: 'Dijkstra',
+        method: graphSearchDijkstra,
+      },
+      {
+        name: 'Floyd-Warshall Algorithm',
+        path: '/graph-search/floyd-warshall',
+        value: 'floydWarshall',
+        label: 'Floyd-Warshall',
+        method: graphSearchFloydWarshall,
+      },
+      {
+        name: 'Bellman-Ford Algorithm',
+        path: '/graph-search/bellman-ford',
+        value: 'bellmanFord',
+        label: 'Bellman-Ford',
+        method: graphSearchBellmanFord,
+      },
+      {
+        name: 'A* Search Algorithm',
+        path: '/graph-search/a-star',
+        value: 'aStar',
+        label: 'A*',
+        method: graphSearchaStar,
+      },
     ],
   },
   {
