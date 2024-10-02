@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { MoonIcon, SunIcon } from 'lucide-react'
 import config from '@/lib/config'
 import { useParams } from 'react-router-dom'
 
@@ -24,16 +23,6 @@ export default function AlgorithmSearch() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">{data?.name}</h1>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {}}
-            className="rounded-full"
-          >
-            <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data?.algorithms.map((algo) => (

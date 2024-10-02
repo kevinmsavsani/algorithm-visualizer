@@ -15,7 +15,7 @@ interface ControlPanelProps {
   setTotalNodes: (value: number) => void
   isAnimating: boolean
   animationSpeed: number
-  generateRandomTree: () => void
+  generateRandomTree?: () => void
   generateRandomGraph: () => void
   toggleAnimation: () => void
   stepForward: () => void
