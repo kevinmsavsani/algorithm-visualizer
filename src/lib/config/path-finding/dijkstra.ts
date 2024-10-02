@@ -10,7 +10,7 @@ const initializeStartNode = (grid: Node[][]) => {
   throw new Error('Start node not found')
 }
 
-const dijkstra = (grid: Node[][]) => {
+const pathFindingDijkstra = (grid: Node[][]) => {
   const visitedNodesInOrder = []
   const unvisitedNodes = getAllNodes(grid)
   initializeStartNode(grid)
@@ -59,4 +59,4 @@ const getAllNodes = (grid: Node[][]) => {
   return nodes
 }  
 
-export default dijkstra
+export default pathFindingDijkstra

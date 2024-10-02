@@ -23,7 +23,7 @@ const initializeStartNode = (grid: Node[][]): Node => {
   throw new Error('Start node not found');
 };
 
-const aStar = (grid: Node[][]): Node[] => {
+const pathFindingaStar = (grid: Node[][]): Node[] => {
   const visitedNodesInOrder: Node[] = [];
   const startNode = initializeStartNode(grid);
   const endNode = getEndNode(grid);
@@ -86,4 +86,4 @@ const getEndNode = (grid: Node[][]): Node => {
   throw new Error('End node not found');
 };
 
-export default aStar;
+export default pathFindingaStar;

@@ -13,6 +13,9 @@ import {
   minimumSpaningTreePrim,
   minimumSpaningTreeReverseDelete,
 } from './minimum-spanning-tree'
+import pathFindingaStar from './path-finding/a-star'
+import pathFindingBfs from './path-finding/bfs'
+import pathFindingDijkstra from './path-finding/dijkstra'
 
 interface AlgorithmConfig {
   name: string
@@ -42,14 +45,37 @@ const config: AlgorithmConfig[] = [
     ],
   },
   {
-    name: 'Path Finding',
+    name: 'Maze Path',
     path: '/path-finding',
     value: 'path-finding',
     algorithms: [
-      { name: "Dijkstra's Algorithm", path: '/path-finding/dijkstra' },
-      { name: 'A* Search Algorithm', path: '/path-finding/astar' },
-      { name: 'Breadth-First Search', path: '/path-finding/bfs' },
-      { name: 'Depth-First Search', path: '/path-finding/dfs' },
+      {
+        value: 'dijkstra',
+        path: '/path-finding/dijkstra',
+        name: "Dijkstra's Algorithm",
+        label: "Dijkstra's Algorithm",
+        method: pathFindingDijkstra,
+        description: 'An algorithm for finding the shortest paths between nodes in a graph.',
+        complexity: 'O(V^2) or O(E + V log V) with a priority queue',
+      },
+      {
+        value: 'astar',
+        path: '/path-finding/astar',
+        name: 'A* Search Algorithm',
+        label: 'A* Search Algorithm',
+        method: pathFindingaStar,
+        description: 'An algorithm for finding the shortest path between nodes in a graph, using heuristics to improve performance.',
+        complexity: 'O(E)',
+      },
+      {
+        value: 'bfs',
+        path: '/path-finding/bfs',
+        name: 'Breadth-First Search',
+        label: 'Breadth-First Search',
+        method: pathFindingBfs,
+        description: 'An algorithm for traversing or searching tree or graph data structures.',
+        complexity: 'O(V + E)',
+      }
     ],
   },
   {

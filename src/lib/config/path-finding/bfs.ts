@@ -37,7 +37,7 @@ To use this BFS implementation:
 
 This BFS implementation will find the shortest path in unweighted graphs and is generally simpler than A*, but it might explore more nodes unnecessarily in larger or weighted graphs compared to A*.
 */
-const bfs = (grid: Node[][]): Node[] => {
+const pathFindingBfs = (grid: Node[][]): Node[] => {
   const visitedNodesInOrder: Node[] = [];
   const queue: Node[] = [];
   const startNode = getStartNode(grid);
@@ -99,4 +99,4 @@ const getUnvisitedNeighbors = (node: Node, grid: Node[][]): Node[] => {
   return neighbors.filter(neighbor => !neighbor.isVisited && !neighbor.isWall);
 };
 
-export default bfs;
+export default pathFindingBfs;

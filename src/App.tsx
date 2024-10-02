@@ -19,8 +19,8 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/sorting" element={<Sorting />} />
-        <Route path="/path-finding" element={<PathfindingVisualizer />} />
         <Route path="/:topic" element={<AlgorithmSearch />} />
+        <Route path="/path-finding/:algorithm" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull/:algorithm" element={<ConvexHullVisualizer />} />
         <Route path="/graph-search/:algorithm" element={<GraphSearchVisualization />} />
         <Route path="/minimum-spanning-tree/:algorithm" element={<MinimumSpaningTreeVisualization />} />

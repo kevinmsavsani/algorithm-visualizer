@@ -19,7 +19,7 @@ import {
   toggleWall,
 } from './utils'
 import { cloneDeep } from 'lodash'
-import dijkstra from './algorithms/dijkstra'
+import dijkstra from '../../lib/config/path-finding/dijkstra'
 import TabsComponent from './tabs'
 import {
   DropdownMenu,
@@ -27,8 +27,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import aStar from './algorithms/a-star'
-import bfs from './algorithms/bfs'
+import aStar from '../../lib/config/path-finding/a-star'
+import bfs from '../../lib/config/path-finding/bfs'
+import { useParams } from 'react-router-dom'
+import config from '@/lib/config'
 
 interface Node {
   row: number
@@ -46,7 +48,7 @@ const GRID_ROWS = 20
 const GRID_COLS = 30
 
 export default function PathfindingVisualizer() {
-  const [method, setMethod] = useState('dijkstra')
+  const { algorithm } = useParams<{ algorithm: string; topic: string }>()
   const [grid, setGrid] = useState<Node[][]>([])
   const [mouseIsPressed, setMouseIsPressed] = useState(false)
   const [startNode, setStartNode] = useState<{ row: number; col: number }>({
@@ -73,6 +75,10 @@ export default function PathfindingVisualizer() {
   const [isVisualized, setIsVisualized] = useState(false)
   const [animationInterval, setAnimationInterval] =
     useState<NodeJS.Timeout | null>(null)
+
+    const algorithmOption = config
+    ?.find((option) => option.value === 'path-finding')
+    ?.algorithms.find((option) => option.value === algorithm)
 
   const createNode = (row: number, col: number): Node => {
     return {
@@ -139,29 +145,21 @@ export default function PathfindingVisualizer() {
     setMouseIsPressed(false)
   }
 
-  const runAlgorithm = () => {
-    let output
-    const start = grid[startNode.row][startNode.col]
-    const end = grid[endNode.row][endNode.col]
-    const clonedGrid = cloneDeep(grid)
 
-    switch (method) {
-      case 'dijkstra':
-        output = dijkstra(clonedGrid)
-        break
-      case 'aStar':
-        output = aStar(clonedGrid)
-        break
-      case 'bfs':
-        output = bfs(clonedGrid)
-        break
-      // Add more cases for other algorithms
-      default:
-        console.error('Unknown algorithm selected')
-        return
+  const handleReset = () => {
+    setIsRunning(false)
+    setIsPaused(false)
+    setIsVisualized(false)
+    if (animationInterval) {
+      clearInterval(animationInterval)
     }
+    initializeGrid()
+  }
 
-    return output
+  const runAlgorithm = () => {
+    const clonedGrid = cloneDeep(grid)
+    handleReset()
+    return algorithmOption.method(clonedGrid)
   }
 
   const generateSteps = () => {
@@ -287,16 +285,6 @@ export default function PathfindingVisualizer() {
     }
   }
 
-  const handleReset = () => {
-    setIsRunning(false)
-    setIsPaused(false)
-    setIsVisualized(false)
-    if (animationInterval) {
-      clearInterval(animationInterval)
-    }
-    initializeGrid()
-  }
-
   const handleSpeedChange = (value: number[]) => {
     setAnimationSpeed(value[0])
     if (isRunning && !isPaused) {
@@ -308,32 +296,9 @@ export default function PathfindingVisualizer() {
     }
   }
 
-  const handleAlgorithmSelection = (algorithm: string) => {
-    setMethod(algorithm)
-    handleReset()
-  }
-
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex w-full justify-between items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">{method}</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => handleAlgorithmSelection('dijkstra')}
-            >
-              dijkstra
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleAlgorithmSelection('aStar')}>
-              aStar
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleAlgorithmSelection('bfs')}>
-              bfs
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
         <TabsComponent setCurrentTool={setCurrentTool} />
         <Button
           onClick={generateSteps}
