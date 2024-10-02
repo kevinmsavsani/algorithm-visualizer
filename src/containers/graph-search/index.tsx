@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ControlPanel } from '../../components/graph/control-panel'
 import { useAlgorithm } from '../../components/graph/useAlgorithm'
-import AlgorithmSelect from '../../components/algorithm-select'
+import AlgorithmSelect, { Option } from '../../components/algorithm-select'
 import {
   aStar,
   bellmanFord,
@@ -23,14 +23,14 @@ export default function GraphSearchVisualization() {
   const [endNode, setEndNode] = useState<number | null>(null)
 
   const options = [
-    { value: 'bfs', label: 'BFS' },
-    { value: 'dfs', label: 'DFS' },
-    { value: 'dijkstra', label: 'Dijkstra' },
-    { value: 'astar', label: 'A*' },
-    { value: 'bellman-ford', label: 'Bellman-Ford' },
-    { value: 'floyd-warshall', label: 'Floyd-Warshall' },
+    { value: 'bfs', label: 'BFS', method: bfs },
+    { value: 'dfs', label: 'DFS', method: dfs },
+    { value: 'dijkstra', label: 'Dijkstra', method: dijkstra },
+    { value: 'astar', label: 'A*', method: aStar },
+    { value: 'bellman-ford', label: 'Bellman-Ford', method: bellmanFord },
+    { value: 'floyd-warshall', label: 'Floyd-Warshall', method: floydWarshall },
   ]
-  const [algorithm, setAlgorithm] = useState<string>('bfs')
+  const [algorithm, setAlgorithm] = useState<Option>(options[0])
   const {
     setGraph,
     graph,
@@ -49,25 +49,7 @@ export default function GraphSearchVisualization() {
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
-    const setNewResults = () => {
-      switch (algorithm) {
-        case 'bfs':
-          return bfs(graph, startNode, endNode)
-        case 'dfs':
-          return dfs(graph, startNode, endNode)
-        case 'dijkstra':
-          return dijkstra(graph, startNode, endNode)
-        case 'astar':
-          return aStar(graph, startNode, endNode)
-        case 'bellman-ford':
-          return bellmanFord(graph, startNode, endNode)
-        case 'floyd-warshall':
-          return floydWarshall(graph, startNode, endNode)
-        default:
-          throw new Error(`Unknown algorithm: ${algorithm}`)
-      }
-    }
-    setResult(setNewResults())
+    setResult(algorithm.method(graph, startNode, endNode))
   }, [graph, startNode, endNode, algorithm])
 
   return (

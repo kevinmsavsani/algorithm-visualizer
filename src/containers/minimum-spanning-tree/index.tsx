@@ -6,18 +6,18 @@ import Graph from '../../components/graph/graph'
 import { useAlgorithm } from '../../components/graph/useAlgorithm'
 import { boruvka, kruskal, prim, reverseDelete } from './algorithm'
 import { Edge } from '@/types'
-import AlgorithmSelect from '../../components/algorithm-select'
+import AlgorithmSelect, { Option } from '../../components/algorithm-select'
 
 export default function MinimumSpaningTreeVisualization() {
   const [totalNodes, setTotalNodes] = useState(10)
   const [result, setResult] = useState<Edge[]>([])
   const options = [
-    { value: 'kruskal', label: 'Kruskal' },
-    { value: 'prim', label: 'Prim' },
-    { value: 'boruvka', label: 'Boruvka' },
-    { value: 'reverse-delete', label: 'Reverse Delete' },
+    { value: 'kruskal', label: 'Kruskal', method: kruskal },
+    { value: 'prim', label: 'Prim', method: prim },
+    { value: 'boruvka', label: 'Boruvka', method: boruvka },
+    { value: 'reverse-delete', label: 'Reverse Delete', method: reverseDelete },
   ]
-  const [algorithm, setAlgorithm] = useState<string>('kruskal')
+  const [algorithm, setAlgorithm] = useState<Option>(options[0])
   const {
     graph,
     currentStep,
@@ -35,22 +35,7 @@ export default function MinimumSpaningTreeVisualization() {
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
-    switch (algorithm) {
-      case 'kruskal':
-        setResult(kruskal(graph))
-        break
-      case 'prim':
-        setResult(prim(graph))
-        break
-      case 'boruvka':
-        setResult(boruvka(graph))
-        break
-      case 'reverse-delete':
-        setResult(reverseDelete(graph))
-        break
-      default:
-        break
-    }
+    setResult(algorithm.method(graph))
   }, [graph, algorithm])
 
   return (
