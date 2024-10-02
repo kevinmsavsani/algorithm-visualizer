@@ -14,12 +14,24 @@ export function useAlgorithm(totalNodes: number, resultSize: number) {
   const animationRef = useRef<NodeJS.Timeout | null>(null)
 
   const generateRandomGraph = useCallback(() => {
-    const nodes: Node[] = Array.from({ length: totalNodes }, (_, i) => ({
-      id: i,
-      x: Math.floor(Math.random() * COL_SIZE) * CELL_SIZE,
-      y: Math.floor(Math.random() * ROW_SIZE) * CELL_SIZE,
-    }))
-
+    const nodes: Node[] = []
+    const a = ((COL_SIZE - 2) * CELL_SIZE) / 2 // Semi-major axis
+    const b = ((ROW_SIZE - 2) * CELL_SIZE) / 2 // Semi-minor axis
+    const centerX = a
+    const centerY = b
+  
+    for (let i = 0; i < totalNodes; i++) {
+      const angle = (2 * Math.PI * i) / totalNodes
+      let x = centerX + a * Math.cos(angle)
+      let y = centerY + b * Math.sin(angle)
+  
+      // Snap to nearest grid point
+      x = Math.round(x / CELL_SIZE) * CELL_SIZE
+      y = Math.round(y / CELL_SIZE) * CELL_SIZE
+  
+      nodes.push({ id: i, x, y })
+    }
+  
     const edges: Edge[] = []
     for (let i = 0; i < totalNodes; i++) {
       const numEdges = Math.floor(Math.random() * 2) + 1 // 1 to 3 edges per node
@@ -35,7 +47,7 @@ export function useAlgorithm(totalNodes: number, resultSize: number) {
         })
       }
     }
-
+  
     setGraph({ nodes, edges })
     resetVisualization()
   }, [totalNodes])

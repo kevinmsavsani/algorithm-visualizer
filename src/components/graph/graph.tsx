@@ -200,7 +200,7 @@ const Graph: React.FC<GraphProps> = ({
                         ? 'green'
                         : isEnd
                           ? 'red'
-                          : isCurrent
+                          : isCurrent && currentStep < result.length - 1
                             ? 'purple'
                             : isVisited
                               ? 'lightblue'
