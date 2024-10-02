@@ -1,4 +1,11 @@
-import { graphSearchaStar, graphSearchBellmanFord, graphSearchBfs, graphSearchDfs, graphSearchDijkstra, graphSearchFloydWarshall } from './graph-search'
+import {
+  graphSearchaStar,
+  graphSearchBellmanFord,
+  graphSearchBfs,
+  graphSearchDfs,
+  graphSearchDijkstra,
+  graphSearchFloydWarshall,
+} from './graph-search'
 import {
   minimumSpaningTreeBoruvka,
   minimumSpaningTreeKruskal,
@@ -16,6 +23,8 @@ interface AlgorithmConfig {
     value?: string
     label?: string
     method?: Function
+    description?: string
+    complexity?: string
   }>
 }
 
@@ -71,6 +80,9 @@ const config: AlgorithmConfig[] = [
         value: 'bfs',
         label: 'BFS',
         method: graphSearchBfs,
+        description:
+          'An algorithm for traversing or searching tree or graph data structures.',
+        complexity: 'O(V + E)',
       },
       {
         name: 'Depth-First Search (DFS)',
@@ -78,6 +90,9 @@ const config: AlgorithmConfig[] = [
         value: 'dfs',
         label: 'DFS',
         method: graphSearchDfs,
+        description:
+          'An algorithm for traversing or searching tree or graph data structures.',
+        complexity: 'O(V + E)',
       },
       {
         name: "Dijkstra's Algorithm",
@@ -85,6 +100,9 @@ const config: AlgorithmConfig[] = [
         value: 'dijkstra',
         label: 'Dijkstra',
         method: graphSearchDijkstra,
+        description:
+          'An algorithm for finding the shortest paths between nodes in a graph.',
+        complexity: 'O(V^2) or O(E + V log V) with a priority queue',
       },
       {
         name: 'Floyd-Warshall Algorithm',
@@ -92,6 +110,9 @@ const config: AlgorithmConfig[] = [
         value: 'floydWarshall',
         label: 'Floyd-Warshall',
         method: graphSearchFloydWarshall,
+        description:
+          'An algorithm for finding shortest paths in a weighted graph with positive or negative edge weights.',
+        complexity: 'O(V^3)',
       },
       {
         name: 'Bellman-Ford Algorithm',
@@ -99,6 +120,9 @@ const config: AlgorithmConfig[] = [
         value: 'bellmanFord',
         label: 'Bellman-Ford',
         method: graphSearchBellmanFord,
+        description:
+          'An algorithm for finding shortest paths in a graph with negative weights.',
+        complexity: 'O(VE)',
       },
       {
         name: 'A* Search Algorithm',
@@ -106,6 +130,9 @@ const config: AlgorithmConfig[] = [
         value: 'aStar',
         label: 'A*',
         method: graphSearchaStar,
+        description:
+          'An algorithm for finding the shortest path between nodes in a graph, using heuristics to improve performance.',
+        complexity: 'O(E)',
       },
     ],
   },
@@ -120,6 +147,9 @@ const config: AlgorithmConfig[] = [
         value: 'kruskal',
         label: 'Kruskal',
         method: minimumSpaningTreeKruskal,
+        description:
+          'An algorithm for finding the minimum spanning tree of a graph.',
+        complexity: 'O(E log E)',
       },
       {
         name: "Prim's Algorithm",
@@ -127,6 +157,9 @@ const config: AlgorithmConfig[] = [
         value: 'prim',
         label: 'Prim',
         method: minimumSpaningTreePrim,
+        description:
+          'An algorithm for finding the minimum spanning tree of a graph.',
+        complexity: 'O(V^2) or O(E + V log V) with a priority queue',
       },
       {
         name: "Boruvka's Algorithm",
@@ -134,6 +167,9 @@ const config: AlgorithmConfig[] = [
         value: 'boruvka',
         label: 'Boruvka',
         method: minimumSpaningTreeBoruvka,
+        description:
+          'An algorithm for finding the minimum spanning tree of a graph.',
+        complexity: 'O(E log V)',
       },
       {
         name: 'Reverse Delete Algorithm',
@@ -141,6 +177,9 @@ const config: AlgorithmConfig[] = [
         value: 'reverse-delete',
         label: 'Reverse Delete',
         method: minimumSpaningTreeReverseDelete,
+        description:
+          'An algorithm for finding the minimum spanning tree of a graph by deleting edges.',
+        complexity: 'O(E log V)',
       },
     ],
   },
