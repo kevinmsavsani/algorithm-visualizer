@@ -28,7 +28,6 @@ const AlgorithmIcon = ({
     | 'sorting'
     | 'path-finding'
     | 'convex-hull'
-    | 'graph'
     | 'graph-search'
     | 'minimum-spanning-tree'
 }) => {
@@ -74,7 +73,6 @@ const AlgorithmIcon = ({
         </svg>
       )
     case 'graph-search':
-    case 'graph':
     case 'minimum-spanning-tree':
       return (
         <svg
@@ -126,7 +124,6 @@ export default function Home() {
             'sorting',
             'path-finding',
             'convex-hull',
-            'graph',
             'graph-search',
             'minimum-spanning-tree',
           ].map((type) => (
@@ -145,7 +142,6 @@ export default function Home() {
                           | 'sorting'
                           | 'path-finding'
                           | 'convex-hull'
-                          | 'graph'
                           | 'graph-search'
                           | 'minimum-spanning-tree'
                       }

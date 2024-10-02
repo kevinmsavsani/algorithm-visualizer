@@ -9,7 +9,6 @@ import Home from './containers/home'
 import Sorting from './containers/sorting'
 import PathfindingVisualizer from './containers/path-finding'
 import ConvexHullVisualizer from './containers/convex-hull'
-import GraphVisualization from './containers/graph'
 import MinimumSpaningTreeVisualization from './containers/minimum-spanning-tree'
 import GraphSearchVisualization from './containers/graph-search'
 import AlgorithmSearch from './containers/algorithm-search'
@@ -22,7 +21,6 @@ const App = () => {
         <Route path="/sorting" element={<Sorting />} />
         <Route path="/path-finding" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull" element={<ConvexHullVisualizer />} />
-        <Route path="/graph" element={<GraphVisualization />} />
         <Route path="/:topic" element={<AlgorithmSearch />} />
         <Route path="/graph-search/:algorithm" element={<GraphSearchVisualization />} />
         <Route path="/minimum-spanning-tree/:algorithm" element={<MinimumSpaningTreeVisualization />} />
