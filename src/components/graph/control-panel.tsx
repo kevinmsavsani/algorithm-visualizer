@@ -3,6 +3,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { PlayIcon, PauseIcon } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+
+const directionTypeOptions = [
+  { value: 'directed', label: 'Directed' },
+  { value: 'undirected', label: 'Undirected' },
+]
 
 interface ControlPanelProps {
   totalNodes: number
@@ -19,6 +25,8 @@ interface ControlPanelProps {
   selectionMode: 'start' | 'end' | null
   setSelectionMode: (mode: 'start' | 'end') => void
   nodeSelectShow?: boolean
+  directionType?: string
+  setDirectionType?: (value: string) => void
 }
 
 export function ControlPanel({
@@ -36,6 +44,8 @@ export function ControlPanel({
   selectionMode,
   setSelectionMode,
   nodeSelectShow = true,
+  directionType,
+  setDirectionType,
 }: ControlPanelProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
@@ -62,6 +72,19 @@ export function ControlPanel({
           </Button>
         </>
       )}
+      {setDirectionType && ( 
+         <Select value={directionType} onValueChange={setDirectionType}>
+         <SelectTrigger className="w-full md:w-[180px]">
+           <SelectValue placeholder="Select algorithm" />
+         </SelectTrigger>
+         <SelectContent>
+           {directionTypeOptions.map((option) => (
+             <SelectItem key={option.value} value={option.value}>
+               {option.label}
+             </SelectItem>
+           ))}
+         </SelectContent>
+       </Select>)}
       <Button onClick={toggleAnimation}>
         {isAnimating ? (
           <PauseIcon className="mr-2 h-4 w-4" />

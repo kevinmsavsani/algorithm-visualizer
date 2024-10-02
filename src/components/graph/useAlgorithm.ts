@@ -11,6 +11,7 @@ export function useAlgorithm(totalNodes: number, resultSize: number) {
   const [selectionMode, setSelectionMode] = useState<'start' | 'end' | null>(null)
   const [isAnimating, setIsAnimating] = useState<boolean>(false)
   const [animationSpeed, setAnimationSpeed] = useState<number>(500)
+  const [directionType, setDirectionType] = useState<string>('undirected')
   const animationRef = useRef<NodeJS.Timeout | null>(null)
 
   const generateRandomGraph = useCallback(() => {
@@ -159,5 +160,7 @@ export function useAlgorithm(totalNodes: number, resultSize: number) {
     setAnimationSpeed,
     selectionMode,
     setSelectionMode,
+    directionType,
+    setDirectionType,
   }
 }
