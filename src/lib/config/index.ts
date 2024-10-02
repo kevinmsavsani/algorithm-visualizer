@@ -1,3 +1,4 @@
+import { grahamScan } from './convex-hull'
 import {
   graphSearchaStar,
   graphSearchBellmanFord,
@@ -56,8 +57,16 @@ const config: AlgorithmConfig[] = [
     path: '/convex-hull',
     value: 'convex-hull',
     algorithms: [
-      { name: 'Graham Scan', path: '/convex-hull/graham-scan' },
-      { name: 'Jarvis March', path: '/convex-hull/jarvis-march' },
+      {
+        value: 'graham-scan',
+        path: '/convex-hull/graham-scan',
+        name: 'Graham Scan',
+        label: 'Graham Scan',
+        method: grahamScan,
+        description:
+        'An algorithm for graph data structures.',
+      complexity: '',
+      }
     ],
   },
   {
