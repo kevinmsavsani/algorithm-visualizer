@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
 import React from 'react'
 import { CELL_SIZE, COL_SIZE, ROW_SIZE } from '@/components/graph/useAlgorithm'
 import { Edge } from '@/types'
