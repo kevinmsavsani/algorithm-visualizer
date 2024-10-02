@@ -1,7 +1,7 @@
-import { BinaryHeap } from "@/lib/binaryHeap"
-import { Edge, Graph } from "@/types"
+import { BinaryHeap } from '@/lib/binaryHeap'
+import { Edge, Graph } from '@/types'
 
-export const kruskal = (graph: Graph) => {
+export const minimumSpaningTreeKruskal = (graph: Graph) => {
   const sortedEdges = [...graph.edges].sort((a, b) => a.weight - b.weight)
   const parent = new Array(graph.nodes.length).fill(null).map((_, i) => i)
   const rank = new Array(graph.nodes.length).fill(0)
@@ -43,7 +43,7 @@ export const kruskal = (graph: Graph) => {
   return result
 }
 
-export const prim = (graph: Graph) => {
+export const minimumSpaningTreePrim = (graph: Graph) => {
   const result: Edge[] = []
   const visited = new Array(graph.nodes.length).fill(false)
   const minHeap = new BinaryHeap<Edge>((a, b) => a.weight - b.weight)
@@ -72,7 +72,7 @@ export const prim = (graph: Graph) => {
   return result
 }
 
-export const boruvka = (graph: Graph) => {
+export const minimumSpaningTreeBoruvka = (graph: Graph) => {
   const components = new Array(graph.nodes.length).fill(null).map((_, i) => i)
   const result: Edge[] = []
   let numComponents = graph.nodes.length
@@ -121,7 +121,7 @@ export const boruvka = (graph: Graph) => {
   return result
 }
 
-export const reverseDelete = (graph: Graph) => {
+export const minimumSpaningTreeReverseDelete = (graph: Graph) => {
   const sortedEdges = [...graph.edges].sort((a, b) => b.weight - a.weight)
   const parent = new Array(graph.nodes.length).fill(null).map((_, i) => i)
   const rank = new Array(graph.nodes.length).fill(0)

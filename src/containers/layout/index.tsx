@@ -1,14 +1,16 @@
+import { CommonBreadcrumb } from '@/components/breadcrumb'
 import Navbar from '@/components/navbar'
 import { Outlet } from 'react-router-dom'
 
 function Layout() {
   return (
-      <div>
-        <Navbar />
-        <div className="pt-12">
-          <Outlet />
-        </div>
+    <div>
+      <Navbar />
+      <div className="pt-16">
+        <CommonBreadcrumb />
+        <Outlet />
       </div>
+    </div>
   )
 }
 

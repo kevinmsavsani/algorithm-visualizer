@@ -1,23 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { ControlPanel } from '../../components/graph/control-panel'
 import Graph from '../../components/graph/graph'
 import { useAlgorithm } from '../../components/graph/useAlgorithm'
-import { boruvka, kruskal, prim, reverseDelete } from './algorithm'
 import { Edge } from '@/types'
-import AlgorithmSelect, { Option } from '../../components/algorithm-select'
+import config from '@/lib/config'
 
 export default function MinimumSpaningTreeVisualization() {
+  const { algorithm } = useParams<{ algorithm: string; topic: string }>()
   const [totalNodes, setTotalNodes] = useState(10)
   const [result, setResult] = useState<Edge[]>([])
-  const options = [
-    { value: 'kruskal', label: 'Kruskal', method: kruskal },
-    { value: 'prim', label: 'Prim', method: prim },
-    { value: 'boruvka', label: 'Boruvka', method: boruvka },
-    { value: 'reverse-delete', label: 'Reverse Delete', method: reverseDelete },
-  ]
-  const [algorithm, setAlgorithm] = useState<Option>(options[0])
+
+  const algorithmOption = config
+    ?.find((option) => option.value === 'minimum-spanning-tree')
+    ?.algorithms.find((option) => option.value === algorithm)
+
   const {
     graph,
     currentStep,
@@ -35,17 +34,11 @@ export default function MinimumSpaningTreeVisualization() {
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
-    setResult(algorithm.method(graph))
+    setResult(algorithmOption.method(graph))
   }, [graph, algorithm])
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
-      <AlgorithmSelect
-        value={algorithm}
-        onValueChange={setAlgorithm}
-        options={options}
-      />
-
       <ControlPanel
         totalNodes={totalNodes}
         animationSpeed={animationSpeed}
