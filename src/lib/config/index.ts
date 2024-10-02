@@ -1,4 +1,4 @@
-import { grahamScan } from './convex-hull'
+import { grahamScan, jarvisMarch, monotoneChain } from './convex-hull'
 import {
   graphSearchaStar,
   graphSearchBellmanFord,
@@ -64,9 +64,29 @@ const config: AlgorithmConfig[] = [
         label: 'Graham Scan',
         method: grahamScan,
         description:
-        'An algorithm for graph data structures.',
-      complexity: '',
-      }
+          'An algorithm to compute the convex hull of a set of points in the plane.',
+        complexity: 'O(n log n)',
+      },
+      {
+        value: 'jarvis-march',
+        path: '/convex-hull/jarvis-march',
+        name: 'Jarvis March',
+        label: 'Jarvis March',
+        method: jarvisMarch,
+        description:
+          'An algorithm to compute the convex hull of a set of points in the plane, also known as the gift wrapping algorithm.',
+        complexity: 'O(nh)',
+      },
+      {
+        value: 'monotone-chain',
+        path: '/convex-hull/monotone-chain',
+        name: 'Monotone Chain',
+        label: 'Monotone Chain',
+        method: monotoneChain,
+        description:
+          "An algorithm to compute the convex hull of a set of points in the plane, also known as Andrew's algorithm.",
+        complexity: 'O(n log n)',
+      },
     ],
   },
   {

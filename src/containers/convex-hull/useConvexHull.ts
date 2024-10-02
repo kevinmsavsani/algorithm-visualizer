@@ -72,7 +72,7 @@ export function useConvexHull(totalPoints: number, algorithmMethod: (points: Poi
           setIsAnimating(false)
           return prevStep
         })
-      }, 1000 / animationSpeed)
+      }, animationSpeed)
     }
     return () => clearInterval(intervalId)
   }, [isAnimating, steps.length, animationSpeed])

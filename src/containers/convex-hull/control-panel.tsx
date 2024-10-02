@@ -2,6 +2,8 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PauseIcon, PlayIcon } from 'lucide-react'
+import { Slider } from '@/components/ui/slider'
 
 interface ControlPanelProps {
   totalPoints: number
@@ -33,37 +35,39 @@ export function ControlPanel({
   totalSteps,
 }: ControlPanelProps) {
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="totalPoints">Total Points:</Label>
-        <Input
-          id="totalPoints"
-          type="number"
-          value={totalPoints}
-          onChange={(e) => setTotalPoints(Number(e.target.value))}
-          min={3}
-          max={100}
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
+      <Button onClick={generateRandomPoints}>Generate Random Points</Button>
+      <Input
+        type="number"
+        value={totalPoints}
+        onChange={(e) => setTotalPoints(Number(e.target.value))}
+      />
+      <Button onClick={toggleAnimation}>
+        {isAnimating ? (
+          <PauseIcon className="mr-2 h-4 w-4" />
+        ) : (
+          <PlayIcon className="mr-2 h-4 w-4" />
+        )}
+        {isAnimating ? 'Pause' : 'Start'}
+      </Button>
+      <Button onClick={resetVisualization}>Reset</Button>
+      <Button onClick={stepBackward}>Step Back</Button>
+      <Button onClick={stepForward}>Step Forward</Button>
+      <div className="flex items-center space-x-2 col-span-1 xl:col-span-2">
+        <Label htmlFor="speed">Animation Speed:</Label>
+        <Slider
+          id="speed"
+          min={100}
+          max={2000}
+          step={100}
+          defaultValue={[500]}
+          value={[animationSpeed]}
+          onValueChange={(value) => setAnimationSpeed(value[0])}
+          className="w-full md:w-[200px]"
         />
+        <span>{animationSpeed}ms</span>
       </div>
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="animationSpeed">Animation Speed:</Label>
-        <Input
-          id="animationSpeed"
-          type="range"
-          min={1}
-          max={10}
-          value={animationSpeed}
-          onChange={(e) => setAnimationSpeed(Number(e.target.value))}
-        />
-      </div>
-      <div className="flex space-x-2">
-        <Button onClick={generateRandomPoints}>Generate Random Points</Button>
-        <Button onClick={toggleAnimation}>{isAnimating ? 'Pause' : 'Play'}</Button>
-        <Button onClick={stepBackward}>Step Backward</Button>
-        <Button onClick={stepForward}>Step Forward</Button>
-        <Button onClick={resetVisualization}>Reset</Button>
-      </div>
-      <div>
+      <div className='flex items-center justify-center'>
         Step: {currentStep + 1} / {totalSteps}
       </div>
     </div>
