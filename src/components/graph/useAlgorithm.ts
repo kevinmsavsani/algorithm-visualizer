@@ -8,7 +8,7 @@ export const CELL_SIZE = 60
 export function useAlgorithm(totalNodes: number, resultSize: number) {
   const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] })
   const [currentStep, setCurrentStep] = useState<number>(-1)
-  const [selectionMode, setSelectionMode] = useState<'start' | 'end' | null>(null)
+  const [selectionMode, setSelectionMode] = useState<'start' | 'end' | 'add'>('add')
   const [isAnimating, setIsAnimating] = useState<boolean>(false)
   const [animationSpeed, setAnimationSpeed] = useState<number>(500)
   const [directionType, setDirectionType] = useState<string>('undirected')

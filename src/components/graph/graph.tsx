@@ -64,11 +64,13 @@ const Graph: React.FC<GraphProps> = ({
         setSelectedNode(null)
       }
     } else {
-      const newNode: Node = { id: graph.nodes.length, x, y }
-      setGraph((prevGraph) => ({
-        ...prevGraph,
-        nodes: [...prevGraph.nodes, newNode],
-      }))
+      if (selectionMode === 'add') {
+        const newNode: Node = { id: graph.nodes.length, x, y }
+        setGraph((prevGraph) => ({
+          ...prevGraph,
+          nodes: [...prevGraph.nodes, newNode],
+        }))
+      }
     }
     resetVisualization()
   }

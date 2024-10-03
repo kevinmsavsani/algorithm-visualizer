@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { PlayIcon, PauseIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import TabsComponent from './tabs'
 
 const directionTypeOptions = [
   { value: 'directed', label: 'Directed' },
@@ -22,8 +23,8 @@ interface ControlPanelProps {
   stepBackward: () => void
   resetVisualization: () => void
   setAnimationSpeed: (value: number) => void
-  selectionMode?: 'start' | 'end' | null
-  setSelectionMode?: (mode: 'start' | 'end') => void
+  selectionMode?: 'start' | 'end' | 'add'
+  setSelectionMode?: (mode: 'start' | 'end' | 'add') => void
   directionType?: string
   setDirectionType?: (value: string) => void
 }
@@ -45,6 +46,11 @@ export function ControlPanel({
   directionType,
   setDirectionType,
 }: ControlPanelProps) {
+  const modes = [
+    { value: 'add', label: 'Add' },
+    { value: 'start', label: 'Start' },
+    { value: 'end', label: 'End' },
+  ]
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
       {generateRandomGraph && <Button onClick={generateRandomGraph}>Generate Random Graph</Button>}
@@ -56,18 +62,7 @@ export function ControlPanel({
       />
       {setSelectionMode && (
         <>
-          <Button
-            onClick={() => setSelectionMode('start')}
-            disabled={selectionMode === 'start'}
-          >
-            Select Start Node
-          </Button>
-          <Button
-            onClick={() => setSelectionMode('end')}
-            disabled={selectionMode === 'end'}
-          >
-            Select End Node
-          </Button>
+          <TabsComponent defaultValue={selectionMode} setCurrentMode={setSelectionMode} modes={modes} />
         </>
       )}
       {setDirectionType && ( 
