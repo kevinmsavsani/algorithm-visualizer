@@ -166,7 +166,6 @@ export default function PathfindingVisualizer() {
       <Canvas
         grid={grid}
         GRID_COLS={GRID_COLS}
-        isRunning={isRunning}
         onMouseDown={handleMouseDown}
         onMouseEnter={handleMouseEnter}
         onMouseUp={handleMouseUp}
