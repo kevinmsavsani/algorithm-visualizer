@@ -16,6 +16,9 @@ import {
 import pathFindingaStar from './path-finding/a-star'
 import pathFindingBfs from './path-finding/bfs'
 import pathFindingDijkstra from './path-finding/dijkstra'
+import bubbleSort from './sorting/bubble-sort'
+import mergeSort from './sorting/merge-sort'
+import selectionSort from './sorting/selection-sort'
 
 interface AlgorithmConfig {
   name: string
@@ -38,10 +41,36 @@ const config: AlgorithmConfig[] = [
     path: '/sorting',
     value: 'sorting',
     algorithms: [
-      { name: 'Bubble Sort', path: '/sorting/bubble-sort' },
-      { name: 'Merge Sort', path: '/sorting/merge-sort' },
-      { name: 'Quick Sort', path: '/sorting/quick-sort' },
-      { name: 'Heap Sort', path: '/sorting/heap-sort' },
+      {
+        value: 'bubble-sort',
+        path: '/sorting/bubble-sort',
+        name: 'Bubble Sort',
+        label: 'Bubble Sort',
+        method: bubbleSort,
+        description:
+          'A simple comparison-based sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.',
+        complexity: 'O(n^2)',
+      },
+      {
+        value: 'merge-sort',
+        path: '/sorting/merge-sort',
+        name: 'Merge Sort',
+        label: 'Merge Sort',
+        method: mergeSort,
+        description:
+          'A divide and conquer algorithm that divides the input array into two halves, calls itself for the two halves, and then merges the two sorted halves.',
+        complexity: 'O(n log n)',
+      },
+      {
+        value: 'selection-sort',
+        path: '/sorting/selection-sort',
+        name: 'Selection Sort',
+        label: 'Selection Sort',
+        method: selectionSort,
+        description:
+          'A comparison-based sorting algorithm that divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list.',
+        complexity: 'O(n^2)',
+      },
     ],
   },
   {
@@ -55,7 +84,8 @@ const config: AlgorithmConfig[] = [
         name: "Dijkstra's Algorithm",
         label: "Dijkstra's Algorithm",
         method: pathFindingDijkstra,
-        description: 'An algorithm for finding the shortest paths between nodes in a graph.',
+        description:
+          'An algorithm for finding the shortest paths between nodes in a graph.',
         complexity: 'O(V^2) or O(E + V log V) with a priority queue',
       },
       {
@@ -64,7 +94,8 @@ const config: AlgorithmConfig[] = [
         name: 'A* Search Algorithm',
         label: 'A* Search Algorithm',
         method: pathFindingaStar,
-        description: 'An algorithm for finding the shortest path between nodes in a graph, using heuristics to improve performance.',
+        description:
+          'An algorithm for finding the shortest path between nodes in a graph, using heuristics to improve performance.',
         complexity: 'O(E)',
       },
       {
@@ -73,9 +104,10 @@ const config: AlgorithmConfig[] = [
         name: 'Breadth-First Search',
         label: 'Breadth-First Search',
         method: pathFindingBfs,
-        description: 'An algorithm for traversing or searching tree or graph data structures.',
+        description:
+          'An algorithm for traversing or searching tree or graph data structures.',
         complexity: 'O(V + E)',
-      }
+      },
     ],
   },
   {

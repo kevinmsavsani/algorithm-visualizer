@@ -18,8 +18,8 @@ const App = () => {
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="/sorting" element={<Sorting />} />
         <Route path="/:topic" element={<AlgorithmSearch />} />
+        <Route path="/sorting/:algorithm" element={<Sorting />} />
         <Route path="/path-finding/:algorithm" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull/:algorithm" element={<ConvexHullVisualizer />} />
         <Route path="/graph-search/:algorithm" element={<GraphSearchVisualization />} />
