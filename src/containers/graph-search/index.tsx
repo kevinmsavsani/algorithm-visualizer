@@ -8,6 +8,12 @@ import Graph from '@/components/graph/graph'
 import { useParams } from 'react-router-dom'
 import config from '@/lib/config'
 
+const modes = [
+  { value: 'add', label: 'Add' },
+  { value: 'start', label: 'Start' },
+  { value: 'end', label: 'End' },
+]
+
 export default function GraphSearchVisualization() {
   const { algorithm } = useParams<{ algorithm: string; topic: string }>()
   const [totalNodes, setTotalNodes] = useState(10)
@@ -57,6 +63,7 @@ export default function GraphSearchVisualization() {
         setAnimationSpeed={setAnimationSpeed}
         selectionMode={selectionMode}
         setSelectionMode={setSelectionMode}
+        modes={modes}
       />
       <Graph
         graph={graph}

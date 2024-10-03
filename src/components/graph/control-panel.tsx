@@ -27,6 +27,7 @@ interface ControlPanelProps {
   setSelectionMode?: (mode: 'start' | 'end' | 'add') => void
   directionType?: string
   setDirectionType?: (value: string) => void
+  modes: { value: string; label: string }[]
 }
 
 export function ControlPanel({
@@ -45,12 +46,8 @@ export function ControlPanel({
   setSelectionMode,
   directionType,
   setDirectionType,
+  modes,
 }: ControlPanelProps) {
-  const modes = [
-    { value: 'add', label: 'Add' },
-    { value: 'start', label: 'Start' },
-    { value: 'end', label: 'End' },
-  ]
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
       {generateRandomGraph && <Button onClick={generateRandomGraph}>Generate Random Graph</Button>}

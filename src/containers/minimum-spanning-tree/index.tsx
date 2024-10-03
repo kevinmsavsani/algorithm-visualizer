@@ -8,6 +8,12 @@ import { useAlgorithm } from '../../components/graph/useAlgorithm'
 import { Edge } from '@/types'
 import config from '@/lib/config'
 
+const modes = [
+  { value: 'add', label: 'Add' },
+  { value: 'start', label: 'Start' },
+  { value: 'end', label: 'End' },
+]
+
 export default function MinimumSpaningTreeVisualization() {
   const { algorithm } = useParams<{ algorithm: string; topic: string }>()
   const [totalNodes, setTotalNodes] = useState(10)
@@ -49,6 +55,7 @@ export default function MinimumSpaningTreeVisualization() {
         stepBackward={stepBackward}
         resetVisualization={resetVisualization}
         setAnimationSpeed={setAnimationSpeed}
+        modes={modes}
       />
       <Graph
         graph={graph}
