@@ -12,19 +12,19 @@ const directionTypeOptions = [
 ]
 
 interface ControlPanelProps {
-  totalNodes: number
-  setTotalNodes: (value: number) => void
+  totalNodes?: number
+  setTotalNodes?: (value: number) => void
   isAnimating: boolean
   animationSpeed: number
   generateRandomTree?: () => void
-  generateRandomGraph: () => void
+  generateRandomGraph?: () => void
   toggleAnimation: () => void
   stepForward: () => void
   stepBackward: () => void
   resetVisualization: () => void
   setAnimationSpeed: (value: number) => void
-  selectionMode?: 'start' | 'end' | 'add'
-  setSelectionMode?: (mode: 'start' | 'end' | 'add') => void
+  selectionMode?: string
+  setSelectionMode?: (mode: string) => void
   directionType?: string
   setDirectionType?: (value: string) => void
   modes: { value: string; label: string }[]
@@ -52,11 +52,11 @@ export function ControlPanel({
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
       {generateRandomGraph && <Button onClick={generateRandomGraph}>Generate Random Graph</Button>}
       {generateRandomTree && <Button onClick={generateRandomTree}>Generate Random Tree</Button>}
-      <Input
+      {setTotalNodes && <Input
         type="number"
         value={totalNodes}
         onChange={(e) => setTotalNodes(Number(e.target.value))}
-      />
+      />}
       {setSelectionMode && (
         <>
           <TabsComponent defaultValue={selectionMode} setCurrentMode={setSelectionMode} modes={modes} />
