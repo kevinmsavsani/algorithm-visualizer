@@ -16,9 +16,7 @@ import {
 import pathFindingaStar from './path-finding/a-star'
 import pathFindingBfs from './path-finding/bfs'
 import pathFindingDijkstra from './path-finding/dijkstra'
-import bubbleSort from './sorting/bubble-sort'
-import mergeSort from './sorting/merge-sort'
-import selectionSort from './sorting/selection-sort'
+import { bubbleSort, heapSort, insertionSort, mergeSort, quickSort, selectionSort } from './sorting'
 
 interface AlgorithmConfig {
   name: string
@@ -70,6 +68,26 @@ const config: AlgorithmConfig[] = [
         description:
           'A comparison-based sorting algorithm that divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list.',
         complexity: 'O(n^2)',
+      },
+      {
+        value: 'insertion-sort',
+        path: '/sorting/insertion-sort',
+        name: 'Insertion Sort',
+        label: 'Insertion Sort',
+        method: insertionSort,
+        description:
+          'A comparison-based sorting algorithm that builds the final sorted array one item at a time, with the assumption that the first item is already sorted.',
+        complexity: 'O(n^2)',
+      },
+      {
+        value: 'heap-sort',
+        path: '/sorting/heap-sort',
+        name: 'Heap Sort',
+        label: 'Heap Sort',
+        method: heapSort,
+        description:
+          'A comparison-based sorting algorithm that uses a binary heap data structure.',
+        complexity: 'O(n log n)',
       },
     ],
   },
