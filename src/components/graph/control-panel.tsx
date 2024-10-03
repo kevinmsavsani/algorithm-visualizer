@@ -27,7 +27,8 @@ interface ControlPanelProps {
   setSelectionMode?: (mode: string) => void
   directionType?: string
   setDirectionType?: (value: string) => void
-  modes: { value: string; label: string }[]
+  modes?: { value: string; label: string }[]
+  buttonLabel?: string;
 }
 
 export function ControlPanel({
@@ -47,10 +48,11 @@ export function ControlPanel({
   directionType,
   setDirectionType,
   modes,
+  buttonLabel = 'Generate Random Graph',
 }: ControlPanelProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
-      {generateRandomGraph && <Button onClick={generateRandomGraph}>Generate Random Graph</Button>}
+      {generateRandomGraph && <Button onClick={generateRandomGraph}>{buttonLabel}</Button>}
       {generateRandomTree && <Button onClick={generateRandomTree}>Generate Random Tree</Button>}
       {setTotalNodes && <Input
         type="number"
@@ -86,7 +88,7 @@ export function ControlPanel({
       <Button onClick={resetVisualization}>Reset</Button>
       <Button onClick={stepBackward}>Step Back</Button>
       <Button onClick={stepForward}>Step Forward</Button>
-      <div className="flex items-center space-x-2 col-span-1 md:col-span-2">
+      <div className="flex items-center space-x-2 col-span-1">
         <Label htmlFor="speed">Animation Speed:</Label>
         <Slider
           id="speed"

@@ -1,7 +1,9 @@
-import { useEffect } from 'react'
 import useSorting from './useSorting.ts'
-import ControlPanel from './control-panel.tsx'
 import ArrayBar from './array-bar.tsx'
+import config from '@/lib/config/index.ts'
+import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
+import { ControlPanel } from '@/components/graph/control-panel.tsx'
 
 const springAnim = {
   type: 'spring',
@@ -10,74 +12,59 @@ const springAnim = {
 }
 
 const Sorting = () => {
+  const { algorithm } = useParams<{ algorithm: string; topic: string }>()
+
+  const algorithmOption = config
+    ?.find((option) => option.value === 'sorting')
+    ?.algorithms.find((option) => option.value === algorithm)
+
   const {
     arr,
     steps,
     currentStep,
     isPaused,
-    method,
     createArray,
-    handleAlgorithmSelection,
-    sortFunc,
     nextStep,
     prevStep,
     resetSteps,
-    pauseSorting,
-    resumeSorting,
+    toggleSorting,
+    setSteps,
+    setCurrentStep,
+    setIsPaused,
+    setAnimationSpeed,
+    animationSpeed,
   } = useSorting()
 
   useEffect(() => {
-    createArray()
-    window.addEventListener('resize', () => {
-      createArray()
-    })
-    return () =>
-      window.removeEventListener('resize', () => {
-        createArray()
-      })
-  }, [])
-
-  const previousArray = steps[currentStep - 1] || arr
+    if (!arr.length) return
+    let sortedSteps = []
+    sortedSteps = algorithmOption.method(arr)
+    setSteps([arr, ...sortedSteps])
+    setCurrentStep(0)
+    setIsPaused(true)
+  }, [arr, algorithm])
 
   return (
     <div>
-      <div className="bg-gray-100 dark:bg-black p-4">
-        <div className="flex justify-between items-center">
-          <a
-            className="text-xl font-bold text-gray-900 dark:text-gray-100"
-            href="#"
-          >
-            {method}
-          </a>
-          <ControlPanel
-            currentStep={currentStep}
-            steps={steps}
-            isPaused={isPaused}
-            method={method}
-            createArray={createArray}
-            handleAlgorithmSelection={handleAlgorithmSelection}
-            sortFunc={sortFunc}
-            nextStep={nextStep}
-            prevStep={prevStep}
-            resetSteps={resetSteps}
-            pauseSorting={pauseSorting}
-            resumeSorting={resumeSorting}
-          />
-        </div>
-      </div>
-      <div className="flex justify-center items-end mt-8 space-x-1">
-        {(steps[currentStep] || arr).map((element, index) => {
-          const hasChanged = previousArray[index]?.value !== element.value
-          return (
-            <ArrayBar
-              key={element.id}
-              element={element}
-              springAnim={springAnim}
-              hasChanged={hasChanged}
-            />
-          )
-        })}
-      </div>
+      <ControlPanel
+        animationSpeed={animationSpeed}
+        isAnimating={!isPaused}
+        generateRandomGraph={() => {
+          createArray()
+        }}
+        toggleAnimation={toggleSorting}
+        stepForward={nextStep}
+        stepBackward={prevStep}
+        resetVisualization={resetSteps}
+        setAnimationSpeed={setAnimationSpeed}
+        buttonLabel='Generate Random Array'
+      />
+      <ArrayBar
+        springAnim={springAnim}
+        currentStep={currentStep}
+        steps={steps}
+        arr={arr}
+      />
     </div>
   )
 }
