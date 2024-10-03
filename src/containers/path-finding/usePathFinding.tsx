@@ -283,24 +283,9 @@ export const useAlgorithm = ({ algorithmMethod }: UseAlgorithmProps) => {
 
   return {
     grid,
-    setGrid,
     isAnimating,
-    setIsAnimating,
-    isPaused,
-    setIsPaused,
-    currentStep,
-    setCurrentStep,
     animationSpeed,
     setAnimationSpeed,
-    totalVisitedNodes,
-    shortestPathLength,
-    isVisualized,
-    visitedNodesInOrder,
-    nodesInShortestPath,
-    initializeGrid,
-    generateSteps,
-    visualizeStep,
-    toggleWall,
     toggleAnimation,
     stepForward,
     stepBackward,
@@ -310,5 +295,7 @@ export const useAlgorithm = ({ algorithmMethod }: UseAlgorithmProps) => {
     handleMouseUp,
     selectedMode,
     setSelectedMode,
+    totalVisitedNodes,
+    shortestPathLength,
   }
 }
