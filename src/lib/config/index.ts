@@ -279,6 +279,54 @@ const config: AlgorithmConfig[] = [
       },
     ],
   },
+  {
+    name: 'Dynamic Programming',
+    value: 'dynamic-programming',
+    path: '/dynamic-programming',
+    algorithms: [
+      {
+        name: 'Knapsack Problem',
+        value: 'knapsack',
+        path: '/dynamic-programming/knapsack',
+        method: () => {},
+        description: 'An algorithm for solving the knapsack problem.',
+        complexity: 'O(nW)',
+      },
+      {
+        name: 'Longest Common Subsequence (LCS)',
+        value: 'lcs',
+        path: '/dynamic-programming/lcs',
+        method: () => {},
+        description:
+          'An algorithm for finding the longest subsequence common to all sequences in a set of sequences.',
+        complexity: 'O(mn)',
+      },
+      { 
+        name: 'Fibonacci Sequence',
+        value: 'fibonacci',
+        path: '/dynamic-programming/fibonacci',
+        method: () => {},
+        description: 'An algorithm for generating the Fibonacci sequence.',
+        complexity: 'O(n)',
+      },
+      { 
+        name: 'Coin Change Problem',
+        value: 'coin-change',
+        path: '/dynamic-programming/coin-change',
+        method: () => {},
+        description: 'An algorithm for solving the coin change problem.',
+        complexity: 'O(nW)',
+      },
+      {
+        name: 'Longest Increasing Subsequence (LIS)',
+        value: 'lis',
+        path: '/dynamic-programming/lis',
+        method: () => {},
+        description: 'An algorithm for finding the longest increasing subsequence in an array.',
+        complexity: 'O(n^2)',
+      }
+    ],
+  }
 ]
 
 export default config

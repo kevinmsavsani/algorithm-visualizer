@@ -1,4 +1,5 @@
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
+import { Code, Layers, Repeat } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const NetworkBackground = () => (
@@ -30,6 +31,7 @@ const AlgorithmIcon = ({
     | 'convex-hull'
     | 'graph-search'
     | 'minimum-spanning-tree'
+    | 'dynamic-programming'
 }) => {
   const iconSize = 'w-40 h-40' // Updated icon size for better aspect ratio
 
@@ -72,8 +74,28 @@ const AlgorithmIcon = ({
           <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
         </svg>
       )
-    case 'graph-search':
     case 'minimum-spanning-tree':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          className={`${iconSize} text-green-400`}
+        >
+          <rect x="16" y="16" width="6" height="6" rx="1" />
+          <rect x="2" y="16" width="6" height="6" rx="1" />
+          <rect x="9" y="2" width="6" height="6" rx="1" />
+          <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
+          <path d="M12 12V8" />
+        </svg>
+      )
+    case 'graph-search':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -89,6 +111,26 @@ const AlgorithmIcon = ({
         >
           <path d="M3 3v16a2 2 0 0 0 2 2h16" />
           <path d="M7 11.207a.5.5 0 0 1 .146-.353l2-2a.5.5 0 0 1 .708 0l3.292 3.292a.5.5 0 0 0 .708 0l4.292-4.292a.5.5 0 0 1 .854.353V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" />
+        </svg>
+      )
+    case 'dynamic-programming':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          className={`${iconSize} text-green-400`}
+        >
+          <path d="M14.828 14.828 21 21" />
+          <path d="M21 16v5h-5" />
+          <path d="m21 3-9 9-4-4-6 6" />
+          <path d="M21 8V3h-5" />
         </svg>
       )
   }
@@ -126,6 +168,7 @@ export default function Home() {
             'convex-hull',
             'graph-search',
             'minimum-spanning-tree',
+            'dynamic-programming',
           ].map((type) => (
             <Link to={`/${type}`} key={type}>
               <CardContainer className="inter-var">
@@ -144,6 +187,7 @@ export default function Home() {
                           | 'convex-hull'
                           | 'graph-search'
                           | 'minimum-spanning-tree'
+                          | 'dynamic-programming'
                       }
                     />
                   </CardItem>

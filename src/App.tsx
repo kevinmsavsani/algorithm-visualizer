@@ -12,6 +12,7 @@ import ConvexHullVisualizer from './containers/convex-hull'
 import MinimumSpaningTreeVisualization from './containers/minimum-spanning-tree'
 import GraphSearchVisualization from './containers/graph-search'
 import AlgorithmSearch from './containers/algorithm-search'
+import DynamicProgrammingVisualizer from './containers/dynamic-programming'
 
 const App = () => {
   const router = createBrowserRouter(
@@ -19,6 +20,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/:topic" element={<AlgorithmSearch />} />
+        <Route path="/dynamic-programming/:algorithm" element={<DynamicProgrammingVisualizer />} />
         <Route path="/sorting/:algorithm" element={<Sorting />} />
         <Route path="/path-finding/:algorithm" element={<PathfindingVisualizer />} />
         <Route path="/convex-hull/:algorithm" element={<ConvexHullVisualizer />} />
