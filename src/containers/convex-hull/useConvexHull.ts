@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Point } from '@/types'
 
-export function useConvexHull(totalPoints: number, algorithmMethod: (points: Point[]) => { steps: Point[][], hull: Point[] }) {
+export function useConvexHull(totalPoints: number) {
   const [points, setPoints] = useState<Point[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [steps, setSteps] = useState<Point[][]>([])
   const [hull, setHull] = useState<Point[]>([])
   const [isAnimating, setIsAnimating] = useState(false)
-  const [animationSpeed, setAnimationSpeed] = useState(5)
+  const [animationSpeed, setAnimationSpeed] = useState(500)
 
   const generateRandomPoints = useCallback(() => {
     const newPoints: Point[] = []
@@ -24,15 +24,6 @@ export function useConvexHull(totalPoints: number, algorithmMethod: (points: Poi
   useEffect(() => {
     generateRandomPoints()
   }, [totalPoints, generateRandomPoints])
-
-  useEffect(() => {
-    if (algorithmMethod && points.length > 0) {
-      const { steps: newSteps, hull: newHull } = algorithmMethod(points)
-      setSteps(newSteps)
-      setHull(newHull)
-      setCurrentStep(0)
-    }
-  }, [points, algorithmMethod])
 
   const toggleAnimation = () => setIsAnimating(!isAnimating)
 
@@ -92,5 +83,7 @@ export function useConvexHull(totalPoints: number, algorithmMethod: (points: Poi
     animationSpeed,
     addPoint,
     removePoint,
+    setHull,
+    setSteps,
   }
 }

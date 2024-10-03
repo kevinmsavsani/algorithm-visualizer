@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { ControlPanel } from './control-panel'
+import { useEffect, useState } from 'react'
 import { useConvexHull } from './useConvexHull'
 import ConvexHullCanvas from './canvas'
 import config from '@/lib/config'
 import { useParams } from 'react-router-dom'
+import { ControlPanel } from '@/components/graph/control-panel'
 
 export default function ConvexHullVisualization() {
   const [totalPoints, setTotalPoints] = useState(10)
@@ -28,24 +28,33 @@ export default function ConvexHullVisualization() {
     animationSpeed,
     addPoint,
     removePoint,
-  } = useConvexHull(totalPoints, convexHullOption?.method)
+    setSteps,
+    setHull,
+  } = useConvexHull(totalPoints)
+
+  useEffect(() => {
+    if (convexHullOption?.method && points.length > 0) {
+      const { steps: newSteps, hull: newHull } = convexHullOption?.method(points)
+      setSteps(newSteps)
+      setHull(newHull)
+      resetVisualization()
+    }
+  }, [points, JSON.stringify(convexHullOption)])
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 dark:bg-black dark:text-white">
       <ControlPanel
-        totalPoints={totalPoints}
+        totalNodes={totalPoints}
         animationSpeed={animationSpeed}
-        setTotalPoints={setTotalPoints}
+        setTotalNodes={setTotalPoints}
         isAnimating={isAnimating}
-        generateRandomPoints={generateRandomPoints}
+        generateRandomGraph={generateRandomPoints}
         toggleAnimation={toggleAnimation}
         stepForward={stepForward}
         stepBackward={stepBackward}
         resetVisualization={resetVisualization}
-        setAnimationSpeed={setAnimationSpeed}
-        currentStep={currentStep}
-        totalSteps={steps.length}
-      />
+        setAnimationSpeed={setAnimationSpeed}   
+        />
       <ConvexHullCanvas
         points={points}
         steps={steps}

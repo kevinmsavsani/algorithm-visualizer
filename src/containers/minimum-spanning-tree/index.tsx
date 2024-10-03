@@ -29,8 +29,6 @@ export default function MinimumSpaningTreeVisualization() {
     resetVisualization,
     setAnimationSpeed,
     animationSpeed,
-    setSelectionMode,
-    selectionMode,
   } = useAlgorithm(totalNodes, result.length)
 
   useEffect(() => {
@@ -51,9 +49,6 @@ export default function MinimumSpaningTreeVisualization() {
         stepBackward={stepBackward}
         resetVisualization={resetVisualization}
         setAnimationSpeed={setAnimationSpeed}
-        selectionMode={selectionMode}
-        setSelectionMode={setSelectionMode}
-        nodeSelectShow={false}
       />
       <Graph
         graph={graph}

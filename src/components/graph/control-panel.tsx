@@ -22,9 +22,8 @@ interface ControlPanelProps {
   stepBackward: () => void
   resetVisualization: () => void
   setAnimationSpeed: (value: number) => void
-  selectionMode: 'start' | 'end' | null
-  setSelectionMode: (mode: 'start' | 'end') => void
-  nodeSelectShow?: boolean
+  selectionMode?: 'start' | 'end' | null
+  setSelectionMode?: (mode: 'start' | 'end') => void
   directionType?: string
   setDirectionType?: (value: string) => void
 }
@@ -43,20 +42,19 @@ export function ControlPanel({
   setAnimationSpeed,
   selectionMode,
   setSelectionMode,
-  nodeSelectShow = true,
   directionType,
   setDirectionType,
 }: ControlPanelProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
-      <Button onClick={generateRandomGraph}>Generate Random Graph</Button>
-      <Button onClick={generateRandomTree}>Generate Random Tree</Button>
+      {generateRandomGraph && <Button onClick={generateRandomGraph}>Generate Random Graph</Button>}
+      {generateRandomTree && <Button onClick={generateRandomTree}>Generate Random Tree</Button>}
       <Input
         type="number"
         value={totalNodes}
         onChange={(e) => setTotalNodes(Number(e.target.value))}
       />
-      {nodeSelectShow && (
+      {setSelectionMode && (
         <>
           <Button
             onClick={() => setSelectionMode('start')}
