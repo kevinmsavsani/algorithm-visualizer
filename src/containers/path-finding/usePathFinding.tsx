@@ -15,37 +15,49 @@ interface Node {
   previousNode: Node | null
 }
 
+const GRID_ROWS = 20
+const GRID_COLS = 30
+
 interface UseAlgorithmProps {
-  startNode: { row: number; col: number }
-  endNode: { row: number; col: number }
-  GRID_ROWS: number
-  GRID_COLS: number
   algorithmMethod: (grid: Node[][]) => { row: number; col: number }[]
 }
 
-export const useAlgorithm = ({
-  startNode,
-  endNode,
-  GRID_ROWS,
-  GRID_COLS,
-  algorithmMethod,
-}: UseAlgorithmProps) => {
+export const useAlgorithm = ({ algorithmMethod }: UseAlgorithmProps) => {
+  const [mouseIsPressed, setMouseIsPressed] = useState(false)
+  const [selectedMode, setSelectedMode] = useState<'wall' | 'start' | 'end'>(
+    'wall',
+  )
   const [grid, setGrid] = useState<Node[][]>([])
-  const [isRunning, setIsRunning] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const [visitedNodesInOrder, setVisitedNodesInOrder] = useState<{ row: number; col: number }[]>([])
+  const [visitedNodesInOrder, setVisitedNodesInOrder] = useState<
+    { row: number; col: number }[]
+  >([])
   const [nodesInShortestPath, setNodesInShortestPath] = useState<Node[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [animationSpeed, setAnimationSpeed] = useState(100)
   const [totalVisitedNodes, setTotalVisitedNodes] = useState(0)
   const [shortestPathLength, setShortestPathLength] = useState(0)
   const [isVisualized, setIsVisualized] = useState(false)
-  const [animationInterval, setAnimationInterval] = useState<NodeJS.Timeout | null>(null)
-  
+  const [animationInterval, setAnimationInterval] =
+    useState<NodeJS.Timeout | null>(null)
+  const [startNode, setStartNode] = useState<{ row: number; col: number }>({
+    row: 10,
+    col: 10,
+  })
+  const [endNode, setEndNode] = useState<{ row: number; col: number }>({
+    row: 10,
+    col: 20,
+  })
   const currentStepRef = useRef(0)
   const gridRef = useRef(grid)
 
-  const createNode = (row: number, col: number, preserveWalls: boolean = false, oldNode?: Node): Node => {
+  const createNode = (
+    row: number,
+    col: number,
+    preserveWalls: boolean = false,
+    oldNode?: Node,
+  ): Node => {
     return {
       row,
       col,
@@ -59,24 +71,30 @@ export const useAlgorithm = ({
     }
   }
 
-  const initializeGrid = useCallback((preserveWalls: boolean = false) => {
-    const newGrid = []
-    for (let row = 0; row < GRID_ROWS; row++) {
-      const currentRow = []
-      for (let col = 0; col < GRID_COLS; col++) {
-        const oldNode = preserveWalls && gridRef.current[row] ? gridRef.current[row][col] : undefined
-        currentRow.push(createNode(row, col, preserveWalls, oldNode))
+  const initializeGrid = useCallback(
+    (preserveWalls: boolean = false) => {
+      const newGrid = []
+      for (let row = 0; row < GRID_ROWS; row++) {
+        const currentRow = []
+        for (let col = 0; col < GRID_COLS; col++) {
+          const oldNode =
+            preserveWalls && gridRef.current[row]
+              ? gridRef.current[row][col]
+              : undefined
+          currentRow.push(createNode(row, col, preserveWalls, oldNode))
+        }
+        newGrid.push(currentRow)
       }
-      newGrid.push(currentRow)
-    }
-    setGrid(newGrid)
-    setVisitedNodesInOrder([])
-    setNodesInShortestPath([])
-    setCurrentStep(0)
-    setTotalVisitedNodes(0)
-    setShortestPathLength(0)
-    setIsVisualized(false)
-  }, [startNode, endNode, GRID_ROWS, GRID_COLS])
+      setGrid(newGrid)
+      setVisitedNodesInOrder([])
+      setNodesInShortestPath([])
+      setCurrentStep(0)
+      setTotalVisitedNodes(0)
+      setShortestPathLength(0)
+      setIsVisualized(false)
+    },
+    [startNode, endNode, GRID_ROWS, GRID_COLS],
+  )
 
   useEffect(() => {
     // When start/end nodes change, preserve the walls
@@ -127,8 +145,11 @@ export const useAlgorithm = ({
 
   const visualizeStep = useCallback(() => {
     const currentStep = currentStepRef.current
-    if (currentStep >= visitedNodesInOrder.length + nodesInShortestPath.length) {
-      setIsRunning(false)
+    if (
+      currentStep >=
+      visitedNodesInOrder.length + nodesInShortestPath.length
+    ) {
+      setIsAnimating(false)
       setIsPaused(true)
       if (animationInterval) {
         clearInterval(animationInterval)
@@ -160,7 +181,7 @@ export const useAlgorithm = ({
   }, [visitedNodesInOrder, nodesInShortestPath, animationInterval])
 
   useEffect(() => {
-    if (isRunning && !isPaused) {
+    if (isAnimating && !isPaused) {
       const interval = setInterval(visualizeStep, animationSpeed)
       setAnimationInterval(interval)
     } else if (animationInterval) {
@@ -171,13 +192,100 @@ export const useAlgorithm = ({
         clearInterval(animationInterval)
       }
     }
-  }, [isRunning, isPaused, animationSpeed])
+  }, [isAnimating, isPaused, animationSpeed])
+
+  const resetVisualization = () => {
+    setIsAnimating(false)
+    setIsPaused(false)
+    initializeGrid()
+  }
+
+  const toggleAnimation = () => {
+    if (!isVisualized) {
+      generateSteps()
+    }
+    if (isAnimating) {
+      setIsPaused(true)
+      setIsAnimating(false)
+    } else {
+      setIsPaused(false)
+      setIsAnimating(true)
+    }
+  }
+
+  const stepForward = () => {
+    if (currentStep < visitedNodesInOrder.length + nodesInShortestPath.length) {
+      setIsPaused(true)
+      setIsAnimating(false)
+      visualizeStep()
+    }
+  }
+
+  const stepBackward = () => {
+    if (currentStep > 0) {
+      setIsPaused(true)
+      setIsAnimating(false)
+      setGrid((prevGrid) => {
+        const newGrid = prevGrid.slice()
+        if (currentStep <= visitedNodesInOrder.length) {
+          const { row, col } = visitedNodesInOrder[currentStep - 1]
+          newGrid[row][col] = {
+            ...newGrid[row][col],
+            isVisited: false,
+          }
+        } else {
+          const pathIndex = currentStep - visitedNodesInOrder.length - 1
+          const node = nodesInShortestPath[pathIndex]
+          newGrid[node.row][node.col] = {
+            ...newGrid[node.row][node.col],
+            isPath: false,
+          }
+        }
+        return newGrid
+      })
+    }
+  }
+
+  const handleMouseDown = (row: number, col: number) => {
+    if (isAnimating) return
+    if (selectedMode === 'wall') {
+      const newGrid = toggleWall(grid, row, col)
+      setGrid(newGrid)
+    } else if (selectedMode === 'start') {
+      const newGrid = [...grid]
+      newGrid[startNode.row][startNode.col].isStart = false
+      setStartNode({ row, col })
+      newGrid[row][col].isStart = true
+      setGrid(newGrid)
+      setSelectedMode('wall')
+    } else if (selectedMode === 'end') {
+      const newGrid = [...grid]
+      newGrid[endNode.row][endNode.col].isEnd = false
+      setEndNode({ row, col })
+      newGrid[row][col].isEnd = true
+      setGrid(newGrid)
+      setSelectedMode('wall')
+    }
+    setMouseIsPressed(true)
+  }
+
+  const handleMouseEnter = (row: number, col: number) => {
+    if (!mouseIsPressed || isAnimating) return
+    if (selectedMode === 'wall') {
+      const newGrid = toggleWall(grid, row, col)
+      setGrid(newGrid)
+    }
+  }
+
+  const handleMouseUp = () => {
+    setMouseIsPressed(false)
+  }
 
   return {
     grid,
     setGrid,
-    isRunning,
-    setIsRunning,
+    isAnimating,
+    setIsAnimating,
     isPaused,
     setIsPaused,
     currentStep,
@@ -192,6 +300,15 @@ export const useAlgorithm = ({
     initializeGrid,
     generateSteps,
     visualizeStep,
-    toggleWall
+    toggleWall,
+    toggleAnimation,
+    stepForward,
+    stepBackward,
+    resetVisualization,
+    handleMouseDown,
+    handleMouseEnter,
+    handleMouseUp,
+    selectedMode,
+    setSelectedMode,
   }
 }
