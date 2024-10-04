@@ -47,7 +47,7 @@ interface KnapsackStep {
   i: number
   w: number
   value: number
-  table: number[][]
+  table: { value: number; selectedItems: number[] }[][]
   selected: boolean[]
 }
 
@@ -81,26 +81,40 @@ export default function KnapsackVisualizer() {
 
   const calculateKnapsack = () => {
     const n = items.length
-    const dp: number[][] = Array(n + 1)
+    const dp: { value: number; selectedItems: number[] }[][] = Array(n + 1)
       .fill(null)
-      .map(() => Array(capacity + 1).fill(0))
+      .map(() =>
+        Array(capacity + 1)
+          .fill(null)
+          .map(() => ({ value: 0, selectedItems: [] })),
+      )
     const newSteps: KnapsackStep[] = []
     const selected: boolean[] = Array(n).fill(false)
 
     for (let i = 1; i <= n; i++) {
       for (let w = 0; w <= capacity; w++) {
         if (items[i - 1].weight <= w) {
-          dp[i][w] = Math.max(
-            items[i - 1].value + dp[i - 1][w - items[i - 1].weight],
-            dp[i - 1][w],
-          )
+          const includeItem =
+            items[i - 1].value + dp[i - 1][w - items[i - 1].weight].value
+          const excludeItem = dp[i - 1][w].value
+          if (includeItem > excludeItem) {
+            dp[i][w].value = includeItem
+            dp[i][w].selectedItems = [
+              ...dp[i - 1][w - items[i - 1].weight].selectedItems,
+              i - 1,
+            ]
+          } else {
+            dp[i][w].value = excludeItem
+            dp[i][w].selectedItems = [...dp[i - 1][w].selectedItems]
+          }
         } else {
-          dp[i][w] = dp[i - 1][w]
+          dp[i][w].value = dp[i - 1][w].value
+          dp[i][w].selectedItems = [...dp[i - 1][w].selectedItems]
         }
         newSteps.push({
           i,
           w,
-          value: dp[i][w],
+          value: dp[i][w].value,
           table: JSON.parse(JSON.stringify(dp)),
           selected: [...selected],
         })
@@ -110,7 +124,7 @@ export default function KnapsackVisualizer() {
     // Backtrack to find selected items
     let w = capacity
     for (let i = n; i > 0 && w > 0; i--) {
-      if (dp[i][w] !== dp[i - 1][w]) {
+      if (dp[i][w].value !== dp[i - 1][w].value) {
         selected[i - 1] = true
         w -= items[i - 1].weight
       }
@@ -118,7 +132,7 @@ export default function KnapsackVisualizer() {
     newSteps.push({
       i: n,
       w: capacity,
-      value: dp[n][capacity],
+      value: dp[n][capacity].value,
       table: dp,
       selected,
     })
@@ -167,23 +181,29 @@ export default function KnapsackVisualizer() {
   }
 
   function generate() {
-    const randomCapacity = Math.floor(Math.random() * 11) + 10; // Random capacity between 10 and 20    const totalWeight = randomCapacity * 2; // Total weight is twice the random capacity
-    const itemCount = 5;
-  
+    const randomCapacity = Math.floor(Math.random() * 11) + 15 // Random capacity between 15 and 25
+    const totalWeight = randomCapacity * 2 // Total weight is twice the random capacity
+    const itemCount = 5
+
     // Generate random weights that sum up to totalWeight
-    let remainingWeight = randomCapacity * 2;
+    let remainingWeight = totalWeight
     const randomItems = Array.from({ length: itemCount }, (_, index) => {
-      const weight = index === itemCount - 1 ? remainingWeight : Math.floor(Math.random() * (remainingWeight / (itemCount - index))) + 1;
-      remainingWeight -= weight;
+      const weight =
+        index === itemCount - 1
+          ? remainingWeight
+          : Math.floor(
+              Math.random() * (remainingWeight / (itemCount - index)),
+            ) + 1
+      remainingWeight -= weight
       return {
         id: Math.random().toString(36).substr(2, 9),
         weight,
         value: Math.floor(Math.random() * 100) + 1, // Random value between 1 and 100
-      };
-    });
-  
-    setCapacity(randomCapacity);
-    setItems(randomItems);
+      }
+    })
+
+    setCapacity(randomCapacity)
+    setItems(randomItems)
   }
 
   return (
@@ -263,13 +283,13 @@ export default function KnapsackVisualizer() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex flex-col p-4 border rounded-md shadow-sm dark:border-gray-700"
+                    className="relative flex flex-col p-4 border rounded-md shadow-sm dark:border-gray-700"
                   >
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => removeItem(item.id)}
-                      className="absolute self-end rounded-full"
+                      className="absolute top-2 right-2 rounded-full"
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -314,52 +334,85 @@ export default function KnapsackVisualizer() {
           </div>
         </CardContent>
       </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Visualization Controls</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-center space-x-2">
+                <Button onClick={generate}>
+                  <CirclePlus className="h-4 w-4 mr-2" /> Generate
+                </Button>
+                <Button onClick={toggleAnimation}>
+                  {isAnimating ? (
+                    <Pause className="h-4 w-4 mr-2" />
+                  ) : (
+                    <Play className="h-4 w-4 mr-2" />
+                  )}
+                  {isAnimating ? 'Pause' : 'Play'}
+                </Button>
+                <Button onClick={stepBackward}>
+                  <SkipBack className="h-4 w-4 mr-2" /> Step Back
+                </Button>
+                <Button onClick={stepForward}>
+                  <SkipForward className="h-4 w-4 mr-2" /> Step Forward
+                </Button>
+                <Button onClick={reset}>
+                  <RotateCcw className="h-4 w-4 mr-2" /> Reset
+                </Button>
+              </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Visualization Controls</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex justify-center space-x-2">
-              <Button onClick={generate}>
-                <CirclePlus className="h-4 w-4 mr-2" /> Generate
-              </Button>
-              <Button onClick={toggleAnimation}>
-                {isAnimating ? (
-                  <Pause className="h-4 w-4 mr-2" />
-                ) : (
-                  <Play className="h-4 w-4 mr-2" />
+              <div className="flex items-center space-x-4">
+                <Label htmlFor="speed">Animation Speed</Label>
+                <Slider
+                  id="speed"
+                  min={1}
+                  max={10}
+                  step={1}
+                  value={[animationSpeed]}
+                  onValueChange={(value) => setAnimationSpeed(value[0])}
+                  className="w-64"
+                />
+                <span>{animationSpeed}x</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex justify-between">
+            <div>
+              <CardHeader>
+                <CardTitle>Current Step Information</CardTitle>
+              </CardHeader>
+              <p>
+                Item: {steps[currentStep]?.i}, Weight: {steps[currentStep]?.w}
+              </p>
+              <p>Current Maximum Value: {steps[currentStep]?.value}</p>
+              <p>
+                Step: {currentStep + 1} / {steps.length}
+              </p>
+            </div>
+            <div className="">
+              <CardHeader>
+                <CardTitle>Selected Items</CardTitle>
+              </CardHeader>
+              <ul className="list-disc list-inside">
+                {steps[currentStep]?.selected.map(
+                  (isSelected, index) =>
+                    isSelected && (
+                      <li key={index}>
+                        Item {index + 1}: Weight = {items[index].weight}, Value
+                        = {items[index].value}
+                      </li>
+                    ),
                 )}
-                {isAnimating ? 'Pause' : 'Play'}
-              </Button>
-              <Button onClick={stepBackward}>
-                <SkipBack className="h-4 w-4 mr-2" /> Step Back
-              </Button>
-              <Button onClick={stepForward}>
-                <SkipForward className="h-4 w-4 mr-2" /> Step Forward
-              </Button>
-              <Button onClick={reset}>
-                <RotateCcw className="h-4 w-4 mr-2" /> Reset
-              </Button>
+              </ul>
             </div>
-
-            <div className="flex items-center space-x-4">
-              <Label htmlFor="speed">Animation Speed</Label>
-              <Slider
-                id="speed"
-                min={1}
-                max={10}
-                step={1}
-                value={[animationSpeed]}
-                onValueChange={(value) => setAnimationSpeed(value[0])}
-                className="w-64"
-              />
-              <span>{animationSpeed}x</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {steps.length > 0 && (
         <Card>
@@ -396,7 +449,20 @@ export default function KnapsackVisualizer() {
                             : ''
                         }`}
                       >
-                        {cell}
+                        <div>
+                          <div>{cell.value}</div>
+                          <div className="text-xxs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                            {cell.selectedItems.length > 0 ? (
+                              <ul className="list-inside">
+                                {cell.selectedItems.map((itemIndex) => (
+                                  <li key={itemIndex}>Item {itemIndex + 1}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <span>No items</span>
+                            )}
+                          </div>
+                        </div>
                       </TableCell>
                     ))}
                   </TableRow>
@@ -406,35 +472,6 @@ export default function KnapsackVisualizer() {
           </CardContent>
         </Card>
       )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Current Step Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            Item: {steps[currentStep]?.i}, Weight: {steps[currentStep]?.w}
-          </p>
-          <p>Current Maximum Value: {steps[currentStep]?.value}</p>
-          <p>
-            Step: {currentStep + 1} / {steps.length}
-          </p>
-          <div className="mt-4">
-            <h3 className="font-semibold">Selected Items:</h3>
-            <ul className="list-disc list-inside">
-              {steps[currentStep]?.selected.map(
-                (isSelected, index) =>
-                  isSelected && (
-                    <li key={index}>
-                      Item {index + 1}: Weight = {items[index].weight}, Value ={' '}
-                      {items[index].value}
-                    </li>
-                  ),
-              )}
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

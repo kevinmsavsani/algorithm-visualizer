@@ -64,6 +64,9 @@ export default {
   		fontFamily: {
   			sans: ['var(--font-sans)', ...fontFamily.sans]
   		},
+			fontSize: {
+        xxs: '0.625rem' // 10px
+      },
   		keyframes: {
   			'accordion-down': {
   				from: {
